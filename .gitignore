@@ -208,6 +208,7 @@ pip-selfcheck.json
 *.mdb
 *.pdb
 *.sqlite3
+*.sqlite
 *.db-shm
 *.db-wal
 

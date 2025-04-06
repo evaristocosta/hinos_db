@@ -216,3 +216,4 @@ pip-selfcheck.json
 
 ###
 *.pptx
+etl_slides/slides*/*

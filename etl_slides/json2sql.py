@@ -119,8 +119,19 @@ def return_number(title):
         for word in title.split(" "):
             match = re.search(r"\d+", word)
             if match:
-                return match.group()
-    return "null"
+                numero = match.group()
+                # remove number from title
+                title_clean = title.replace(match.group(), "").strip()
+                # check if string starts with hifen and remove it
+                if title_clean.startswith("-"):
+                    title_clean = title_clean[1:].strip()
+                else:
+                    title_clean = title_clean.strip()
+
+                return numero, title_clean
+            else:
+                return "null", title
+    return "null", None
 
 
 def process_structure(praises):
@@ -135,7 +146,7 @@ def process_structure(praises):
         texts = [text.replace("–", "-") for text in texts]
 
         title, title_index = return_possible_title(texts)
-        numero = return_number(title)
+        numero, title_clean = return_number(title)
 
         texts_wo_title = texts.copy()
         if title_index is not None:
@@ -147,7 +158,7 @@ def process_structure(praises):
         new_structure.append(
             {
                 "numero": numero,
-                "nome": title if title is not None else "null",
+                "nome": title_clean if title_clean is not None else "null",
                 "texto": texts_full,
                 "texto_limpo": texts_clean,
             }

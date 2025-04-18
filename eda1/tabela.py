@@ -15,12 +15,12 @@ texto_filtro = st.sidebar.text_input("Filtrar no texto:")
 hinos_filtrado = hinos.copy()
 if num_selecionado:
     hinos_filtrado = hinos_filtrado[
-        hinos_filtrado["numero_int"].astype(str).str.contains(num_selecionado)
+        hinos_filtrado["numero"].astype(str).str.contains(num_selecionado)
     ]
 
 if nome_filtro:
     hinos_filtrado = hinos_filtrado[
-        hinos_filtrado["nome_limpo"].str.contains(nome_filtro, case=False, na=False)
+        hinos_filtrado["nome"].str.contains(nome_filtro, case=False, na=False)
     ]
 
 
@@ -43,15 +43,15 @@ st.markdown("# Tabela de louvores")
 st.dataframe(
     hinos_filtrado[
         [
-            "numero_int",
-            "nome_limpo",
+            "numero",
+            "nome",
             "categoria",
             "texto_limpo",
         ]
     ].rename(
         columns={
-            "numero_int": "Número",
-            "nome_limpo": "Título",
+            "numero": "Número",
+            "nome": "Título",
             "categoria": "Categoria",
             "texto_limpo": "Texto",
         }

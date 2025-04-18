@@ -10,15 +10,15 @@ nltk.download("stopwords")
 @st.cache_data
 def hinos_processados():
     hinos = load_data()
-    hinos_analise = preprocessing(hinos)
-    hinos_texto = text_processing(hinos_analise)
-    hinos_length = length_calc(hinos_texto)
+    hinos = preprocessing(hinos)
+    # hinos = text_processing(hinos)
+    # hinos = length_calc(hinos)
 
-    return hinos_length
+    return hinos
 
 
 def load_data() -> pd.DataFrame:
-    engine = create_engine("sqlite:///assets//hinos.db")
+    engine = create_engine("sqlite:///assets//database.db")
 
     # Connect to the database
     connection = engine.connect()
@@ -46,15 +46,11 @@ def preprocessing(hinos: pd.DataFrame) -> pd.DataFrame:
     hinos_analise = hinos.copy()
     hinos_analise.loc[hinos_analise["numero"] == "null", "numero"] = 0
     hinos_analise["numero_int"] = hinos_analise["numero"].astype(int)
-    hinos_analise["nome_limpo"] = (
-        hinos_analise["nome"].str.split(" - ").str[1].str.strip()
+    hinos_analise = hinos_analise.drop(columns=["numero"]).rename(
+        columns={"numero_int": "numero"}
     )
-    hinos_analise.loc[hinos_analise["numero_int"] == 0, "nome_limpo"] = hinos_analise[
-        "nome"
-    ]
-    hinos_analise = hinos_analise.drop(columns=["numero", "nome"])
-    hinos_analise.sort_values("numero_int")
-    return hinos_analise
+
+    return hinos_analise.sort_values("numero")
 
 
 def text_processing(hinos_analise: pd.DataFrame) -> pd.DataFrame:

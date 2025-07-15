@@ -9,9 +9,6 @@ categorias_count = (
     .reset_index()
     .rename(columns={"numero": "contagem"})
 )
-categorias_count["categoria_abr"] = categorias_count["categoria"].apply(
-    lambda x: x[:13] + "..." if len(x) > 15 else x
-)
 
 
 st.markdown("# Categoria dos louvores")

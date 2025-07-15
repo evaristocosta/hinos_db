@@ -6,7 +6,7 @@ hinos = hinos_processados()
 
 # separa dados de interesse
 hinos_analise = (
-    hinos[["numero", "nome"]]
+    hinos[["numero", "nome", "categoria"]]
     .rename(columns={"numero": "Nº", "nome": "Nome"})
     .set_index("Nº")
 )
@@ -20,8 +20,8 @@ hinos_analise["Nome"] = hinos_analise["Nome"].str.replace(
 # cria dataframe comparativo, considerando o subtitulo como um nome diferente
 hinos_titulos = pd.concat(
     [
-        hinos_analise[["subtitulo"]].rename(columns={"subtitulo": "Nome"}),
-        hinos_analise[["Nome"]],
+        hinos_analise[["subtitulo", "categoria"]].rename(columns={"subtitulo": "Nome"}),
+        hinos_analise[["Nome", "categoria"]],
     ]
 ).dropna()
 # calcula o tamanho do titulo
@@ -30,7 +30,15 @@ hinos_titulos["titulo_tam_real"] = hinos_titulos["Nome"].str.len()
 
 
 st.markdown("# Tamanho dos títulos")
-# st.sidebar.markdown("# Tamanho dos títulos")
+st.sidebar.markdown("# Filtro")
+# add filter by category
+categorias = hinos_analise["categoria"].unique()
+categoria_selecionada = st.sidebar.selectbox(
+    "Selecione uma categoria:", ["TODAS"] + list(categorias)
+)
+if categoria_selecionada != "TODAS":
+    hinos_analise = hinos_analise.query(f"categoria == '{categoria_selecionada}'")
+    hinos_titulos = hinos_titulos.query(f"categoria == '{categoria_selecionada}'")
 
 
 col1, col2 = st.columns(2)
@@ -75,7 +83,9 @@ with col2:
     st.markdown("**Considerando subtítulos**")
     st.markdown("Top 10 maiores títulos")
     st.dataframe(
-        hinos_titulos.sort_values(by="titulo_tam_real", ascending=False).head(10),
+        hinos_titulos[["Nome", "titulo_tam_real"]]
+        .sort_values(by="titulo_tam_real", ascending=False)
+        .head(10),
         column_config={
             "titulo_tam_real": st.column_config.ProgressColumn(
                 "Tamanho",
@@ -89,7 +99,9 @@ with col2:
     )
     st.markdown("Top 10 menores títulos")
     st.dataframe(
-        hinos_titulos.sort_values(by="titulo_tam_real").head(10),
+        hinos_titulos[["Nome", "titulo_tam_real"]]
+        .sort_values(by="titulo_tam_real")
+        .head(10),
         column_config={
             "titulo_tam_real": st.column_config.ProgressColumn(
                 "Tamanho",

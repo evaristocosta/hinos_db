@@ -92,7 +92,7 @@ def set_text_clean(texts_wo_title):
         if line:
             new_texts_clean.append(line)
     texts_clean = new_texts_clean
-    texts_clean = list(dict.fromkeys(texts_clean))
+    # texts_clean = list(dict.fromkeys(texts_clean))
     texts_clean = " ".join(texts_clean)
     texts_clean = texts_clean.replace("\n", " ")
     # remove all double quotes

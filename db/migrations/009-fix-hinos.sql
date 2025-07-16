@@ -1,1 +1,9 @@
 update hino set nome = 'PROCLAMAI A TODO MUNDO' where numero = '721';
+update hino set nome = 'DE ETERNIDADE A ETERNIDADE', numero = '73', texto_limpo = 'DE ETERNIDADE A ETERNIDADE\\nJESUS É O NOSSO DEUS.\\nTODAS AS COISAS\\nPOR ELE FORAM FEITAS \\nE SEM ELE NADA DO QUE \\nFOI FEITO SE FEZ.\\n\\nO HOMEM DEUS CRIOU,\\nIGUAL A ELE O FORMOU,\\nPODENDO ASSIM\\nVIVER ETERNAMENTE \\nCOM JESUS.\\n\\nMAS O HOMEM PECOU \\nE DE DEUS SE AFASTOU.\\n\\nNOVO PROJETO DEUS CRIOU \\nPOR SEU AMOR,\\nPRA RESGATAR O HOMEM, \\nPOBRE PECADOR:\\n\\n“PORQUE DEUS AMOU \\nO MUNDO DE TAL MANEIRA\\nQUE DEU O SEU FILHO UNIGÊNITO,\\nPARA QUE TODO AQUELE \\nQUE NELE CRÊ NÃO PEREÇA, \\nMAS TENHA A VIDA ETERNA.”\\n\\nCREIO EM JESUS, \\nETERNAMENTE VIVEREI;\\nSEGUINDO A JESUS \\nPARA O CÉU EU SUBIREI\\nE ADORAREI O REI, \\nADORAREI O REI,\\nADORAREI O REI JESUS.' where nome = '.';
+update hino set nome = 'MUITO EM BREVE O REI VEM' where numero = '01' and coletanea_id = 3;
+update hino set nome = 'PREPARAI-VOS, Ó IGREJA AMADA' where numero = '02' and coletanea_id = 3;
+update hino set nome = 'JESUS VOLTARÁ' where numero = '03' and coletanea_id = 3;
+update hino set nome = 'EU CLAMO, EU ORO' where numero = '05' and coletanea_id = 3;
+update hino set nome = 'A VITÓRIA DA IGREJA' where numero = '06' and coletanea_id = 3;
+update hino set nome = 'ESTÁ CHEGANDO A HORA' where numero = '07' and coletanea_id = 3;
+update hino set nome = 'AS PARÁBOLAS DO REINO', numero = '04', texto_limpo = 'SAINDO DE CASA \\nNAQUELE DIA, \\nASSENTADO JUNTO AO MAR, JESUS FOI EXPLICAR\\n\\n\\nÀQUELA MULTIDĀO \\nE A TODOS QUE O SEGUIAM,\\nSOBRE AS PARÁBOLAS \\nDE UM REINO QUE VIRIA.\\n\\nSETE SÃO \\nAS PARÁBOLAS DO REINO:\\nSEMEADOR, TRIGO E JOIO,\\nGRÃO DE MOSTARDA, FERMENTO,\\nTESOURO ESCONDIDO, PÉROLA E REDE.\\n\\nVAMOS VIGIAR E ORAR,\\nJESUS BREVE VIRÁ; IREMOS TODOS COM \\nELE MORAR. \\nMARANATA, JESUS VEM!' where coletanea_id = 3 and numero = 'null';

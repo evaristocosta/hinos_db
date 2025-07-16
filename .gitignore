@@ -218,3 +218,4 @@ pip-selfcheck.json
 *.pptx
 etl_slides/slides*/*
 eda1/assets/*
+pesquisadorHinos/*

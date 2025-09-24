@@ -8,6 +8,7 @@
     - 1298
     - 1299
 - slide 1 removido
+- slide 22 corrigido (linha duplicada removida, "HUMILDE E FRACO SOU,")
 
 03.COLETÂNEA DE CIAS_2021 TV.pptx
 - slides 1-3 removidos

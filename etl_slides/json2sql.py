@@ -82,7 +82,7 @@ def return_possible_title(texts):
 
 
 def set_text_clean(texts_wo_title):
-    texts_clean = [re.sub(r"\s+", " ", text) for text in texts_wo_title]
+    texts_clean = [re.sub(r"[ \t]{2,}", " ", text) for text in texts_wo_title]
     texts_clean = [line for line in texts_clean if line not in TAGS_LITERAIS]
     new_texts_clean = []
     for line in texts_clean:
@@ -92,9 +92,11 @@ def set_text_clean(texts_wo_title):
         if line:
             new_texts_clean.append(line)
     texts_clean = new_texts_clean
-    # texts_clean = list(dict.fromkeys(texts_clean))
+    coro_regex = re.compile(r"^CORO\s*")
+    texts_clean = [line for line in texts_clean if not coro_regex.match(line)]
     texts_clean = " ".join(texts_clean)
     texts_clean = texts_clean.replace("\n", " ")
+    texts_clean = re.sub(r"[ \t]{2,}", " ", texts_clean)
     # remove all double quotes
     texts_clean = texts_clean.replace("“", "")
     texts_clean = texts_clean.replace("”", "")

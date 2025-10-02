@@ -219,3 +219,5 @@ pip-selfcheck.json
 etl_slides/slides*/*
 eda1/assets/*
 pesquisadorHinos/*
+cc.*.bin
+cc.*.bin.gz

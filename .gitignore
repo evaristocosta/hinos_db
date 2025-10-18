@@ -217,7 +217,7 @@ pip-selfcheck.json
 ###
 *.pptx
 etl_slides/slides*/*
-eda1/assets/*
+!eda1/assets/database.db
 pesquisadorHinos/*
 cc.*.bin
 cc.*.bin.gz

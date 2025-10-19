@@ -1,22 +1,25 @@
 import streamlit as st
 from sqlalchemy import create_engine
 import pandas as pd
-import string
-import nltk
 
-nltk.download("stopwords")
+# import nltk
+
+# nltk.download("stopwords")
 
 
 @st.cache_data
 def hinos_processados():
-    hinos = load_data()
-    hinos = preprocessing(hinos)
+    # hinos = load_data()
+    # hinos = preprocessing(hinos)
 
-    return hinos
+    hinos_processados = pd.read_pickle("../assets/hinos_analise_com_emocoes.pkl")
+
+    return hinos_processados
 
 
+@st.cache_data
 def load_data() -> pd.DataFrame:
-    engine = create_engine("sqlite:///assets//database.db")
+    engine = create_engine("sqlite:///../assets//database.db")
 
     # Connect to the database
     connection = engine.connect()
@@ -40,7 +43,7 @@ def load_data() -> pd.DataFrame:
     return hinos_analise
 
 
-def preprocessing(hinos: pd.DataFrame) -> pd.DataFrame:
+""" def preprocessing(hinos: pd.DataFrame) -> pd.DataFrame:
     hinos_analise = hinos.copy()
     hinos_analise.loc[hinos_analise["numero"] == "null", "numero"] = 0
     hinos_analise["numero_int"] = hinos_analise["numero"].astype(int)
@@ -52,3 +55,15 @@ def preprocessing(hinos: pd.DataFrame) -> pd.DataFrame:
     )
 
     return hinos_analise.sort_values("numero")
+"""
+
+
+@st.cache_data
+def similarity_matrices():
+    similarity_word = pd.read_pickle(
+        "../assets/similarity_matrix_word_embeddings_tfidf.pkl"
+    )
+    similarity_sent = pd.read_pickle(
+        "../assets/similarity_matrix_sentence_embeddings.pkl"
+    )
+    return similarity_word, similarity_sent

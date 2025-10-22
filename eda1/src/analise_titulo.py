@@ -2,12 +2,13 @@ import streamlit as st
 import pandas as pd
 from pipeline import hinos_processados
 
-hinos = hinos_processados()
+hinos: pd.DataFrame = hinos_processados()
 
 # separa dados de interesse
+hinos["numero"] = hinos.index
 hinos_analise = (
-    hinos[["numero", "nome", "categoria"]]
-    .rename(columns={"numero": "Nº", "nome": "Nome"})
+    hinos[["numero", "nome", "categoria_abr"]]
+    .rename(columns={"numero": "Nº", "nome": "Nome", "categoria_abr": "Categoria"})
     .set_index("Nº")
 )
 # separa subtitulo do nome
@@ -20,8 +21,8 @@ hinos_analise["Nome"] = hinos_analise["Nome"].str.replace(
 # cria dataframe comparativo, considerando o subtitulo como um nome diferente
 hinos_titulos = pd.concat(
     [
-        hinos_analise[["subtitulo", "categoria"]].rename(columns={"subtitulo": "Nome"}),
-        hinos_analise[["Nome", "categoria"]],
+        hinos_analise[["subtitulo", "Categoria"]].rename(columns={"subtitulo": "Nome"}),
+        hinos_analise[["Nome", "Categoria"]],
     ]
 ).dropna()
 # calcula o tamanho do titulo
@@ -32,13 +33,13 @@ hinos_titulos["titulo_tam_real"] = hinos_titulos["Nome"].str.len()
 st.markdown("# Tamanho dos títulos")
 st.sidebar.markdown("# Filtro")
 # add filter by category
-categorias = hinos_analise["categoria"].unique()
+categorias = hinos_analise["Categoria"].unique()
 categoria_selecionada = st.sidebar.selectbox(
     "Selecione uma categoria:", ["TODAS"] + list(categorias)
 )
 if categoria_selecionada != "TODAS":
-    hinos_analise = hinos_analise.query(f"categoria == '{categoria_selecionada}'")
-    hinos_titulos = hinos_titulos.query(f"categoria == '{categoria_selecionada}'")
+    hinos_analise = hinos_analise.query(f"Categoria == '{categoria_selecionada}'")
+    hinos_titulos = hinos_titulos.query(f"Categoria == '{categoria_selecionada}'")
 
 
 col1, col2 = st.columns(2)

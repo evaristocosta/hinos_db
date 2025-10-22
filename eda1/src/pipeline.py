@@ -1,6 +1,7 @@
 import streamlit as st
 from sqlalchemy import create_engine
 import pandas as pd
+from pathlib import Path
 
 # import nltk
 
@@ -8,18 +9,22 @@ import pandas as pd
 
 
 @st.cache_data
-def hinos_processados():
+def hinos_processados() -> pd.DataFrame:
     # hinos = load_data()
     # hinos = preprocessing(hinos)
-
-    hinos_processados = pd.read_pickle("../assets/hinos_analise_com_emocoes.pkl")
+    # pkl_path = Path(__file__).parent.parent / "assets" / "hinos_analise_com_emocoes.pkl"
+    pkl_path = (
+        Path(__file__).parent.parent / "assets" / "hinos_analise_word_embeddings.pkl"
+    )
+    hinos_processados = pd.read_pickle(pkl_path)
 
     return hinos_processados
 
 
 @st.cache_data
 def load_data() -> pd.DataFrame:
-    engine = create_engine("sqlite:///../assets//database.db")
+    database_path = Path(__file__).parent.parent / "assets" / "database.db"
+    engine = create_engine(f"sqlite:///{database_path}")
 
     # Connect to the database
     connection = engine.connect()

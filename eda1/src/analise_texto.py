@@ -4,8 +4,7 @@ import pandas as pd
 import plotly.express as px
 from pipeline import hinos_processados
 
-st.markdown("# Exploração de palavras ✒️")
-# st.sidebar.markdown("# Page 3 ❄️")
+st.markdown("# Exploração de palavras 🔡")
 
 
 # Exploração dos textos (eda1_part3.1):
@@ -137,7 +136,7 @@ st.bar_chart(
     x_label="Palavra",
     horizontal=True,
     sort=False,
-    use_container_width=True,
+    width="stretch",
 )
 
 

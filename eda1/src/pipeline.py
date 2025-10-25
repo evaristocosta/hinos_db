@@ -12,10 +12,10 @@ from pathlib import Path
 def hinos_processados() -> pd.DataFrame:
     # hinos = load_data()
     # hinos = preprocessing(hinos)
-    # pkl_path = Path(__file__).parent.parent / "assets" / "hinos_analise_com_emocoes.pkl"
-    pkl_path = (
-        Path(__file__).parent.parent / "assets" / "hinos_analise_word_embeddings.pkl"
-    )
+    pkl_path = Path(__file__).parent.parent / "assets" / "hinos_analise_com_emocoes.pkl"
+    # pkl_path = (
+    #     Path(__file__).parent.parent / "assets" / "hinos_analise_word_embeddings.pkl"
+    # )
     hinos_processados = pd.read_pickle(pkl_path)
 
     return hinos_processados
@@ -66,9 +66,13 @@ def load_data() -> pd.DataFrame:
 @st.cache_data
 def similarity_matrices():
     similarity_word = pd.read_pickle(
-        "../assets/similarity_matrix_word_embeddings_tfidf.pkl"
+        Path(__file__).parent.parent
+        / "assets"
+        / "similarity_matrix_word_embeddings_tfidf.pkl"
     )
     similarity_sent = pd.read_pickle(
-        "../assets/similarity_matrix_sentence_embeddings.pkl"
+        Path(__file__).parent.parent
+        / "assets"
+        / "similarity_matrix_sentence_embeddings.pkl"
     )
     return similarity_word, similarity_sent

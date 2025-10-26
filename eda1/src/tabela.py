@@ -9,7 +9,7 @@ st.sidebar.header("Filtros")  # Deixar os filtros na barra lateral
 # Filtros
 # st.sidebar.subheader("Filtros:")
 num_selecionado = st.sidebar.text_input("Número:")
-nome_filtro = st.sidebar.text_input("Nome:")
+nome_filtro = st.sidebar.text_input("Título:")
 texto_filtro = st.sidebar.text_input("Texto:")
 
 # Aplicar os filtros
@@ -33,7 +33,7 @@ if texto_filtro:
 # Filtro por categoria
 categorias_unicas = hinos["categoria"].unique()
 categorias_selecionadas = st.sidebar.multiselect(
-    "Filtrar por categoria:", categorias_unicas, default=categorias_unicas
+    "Filtrar por categoria:", categorias_unicas, placeholder="Selecione categorias"
 )
 if categorias_selecionadas:
     hinos_filtrado = hinos_filtrado[
@@ -42,6 +42,14 @@ if categorias_selecionadas:
 
 
 st.markdown("# Tabela de louvores")
+
+st.markdown(
+    """
+A tabela a seguir representa a base de dados de hinos utilizada para as análises presentes neste projeto. Ela também
+pode ser usada para pesquisa de hinos específicos, utilizando os filtros disponíveis na barra lateral.
+"""
+)
+
 st.dataframe(
     hinos_filtrado[
         [
@@ -52,7 +60,7 @@ st.dataframe(
         ]
     ].rename(
         columns={
-            "numero": "Número",
+            "numero": "Nº",
             "nome": "Título",
             "categoria": "Categoria",
             "texto_limpo": "Texto",

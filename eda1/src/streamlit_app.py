@@ -22,7 +22,7 @@ sent_embeddings = st.Page("sent_embeddings.py", title="Embeddings de frases", ic
 # Seleção de similares usando TOPSIS (eda1_part6)
 topsis_escolha = st.Page("topsis_escolha.py", title="Seleção de similares", icon="✅")
 # Análise de emoções (eda1_part7)
-emocoes = st.Page("emocoes.py", title="Análise de emoções", icon="💞")
+emocoes = st.Page("emocoes.py", title="Análise de emoções", icon="🎭")
 
 # Set up navigation
 pg = st.navigation(

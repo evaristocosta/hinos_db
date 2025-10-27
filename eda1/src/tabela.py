@@ -33,7 +33,7 @@ if texto_filtro:
 # Filtro por categoria
 categorias_unicas = hinos["categoria"].unique()
 categorias_selecionadas = st.sidebar.multiselect(
-    "Filtrar por categoria:", categorias_unicas, placeholder="Selecione categorias"
+    "Filtrar por categoria:", categorias_unicas, placeholder="Selecione categorias..."
 )
 if categorias_selecionadas:
     hinos_filtrado = hinos_filtrado[

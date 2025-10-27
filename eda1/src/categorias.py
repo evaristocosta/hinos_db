@@ -101,20 +101,19 @@ st.altair_chart(chart, use_container_width=True)
 # conclusões
 # st.markdown("## Conclusões")
 conclusao_texto = """
-O gráfico mostra a distribuição dos hinos por categoria na coletânea. A análise dos dados 
-indica o seguinte:
+A análise dos dados indica o seguinte:
 
 - A categoria "DEDICAÇÃO" é a maior em quantidade, com 104 hinos (13,08%), sendo a categoria mais representada.
-- Outras categorias bastante presentes são "VOLTA DE JESUS" e "MORTE, RESSURREIÇÃO E VOLTA DE JESUS", 
+- Outras categorias bastante presentes são "VOLTA DE JESUS E ETERNIDADE" e "MORTE, RESSURREIÇÃO E SALVAÇÃO", 
 ambas com 94 hinos cada (11,82% cada), seguidas de "SANTIFICAÇÃO E DERRAMAMENTO DO ESPÍRITO SANTO" 
 (92 hinos, 11,57%), "CONSOLO E ENCORAJAMENTO" (91 hinos, 11,45%) e "LOUVOR" (78 hinos, 9,81%).
 - Categorias pequenas incluem "SALMOS DE LOUVOR" com apenas 16 hinos (2,01%), destacando-se como a menos representada.
-- A distribuição geral não é uniforme: há predominância de temas relacionados a dedicação, 
-volta de Jesus, santificação e consolo, enquanto "Salmos de Louvor" e "Invocação" são menos frequentes.
+- A distribuição geral não é uniforme: há predominância de categorias relacionados a dedicação, 
+volta de Jesus, santificação e consolo, enquanto Salmos de Louvor e Invocação são menos frequentes.
 - Ao analisar as porcentagens, notamos que pelo menos seis categorias têm números entre 8%--13%, sugerindo 
 certa variedade, mas com clara concentração em algumas temáticas centrais da coletânea.
 
-Essas conclusões indicam as ênfases temáticas da coletânea, com maior foco em dedicação espiritual e 
-esperança escatológica, enquanto louvor em formato de salmos e músicas de invocação têm menos destaque.
+Essas conclusões indicam as ênfases temáticas da coletânea, com maior foco em dedicação e 
+esperança, enquanto louvor de categorias de salmos e invocação têm menos destaque.
 """
 st.markdown(conclusao_texto)

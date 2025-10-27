@@ -2,9 +2,29 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import plotly.express as px
+import altair as alt
 from pipeline import hinos_processados
 
-st.markdown("# Exploração de palavras 🔡")
+
+"""
+# Exploração de palavras 🔡
+
+Nesta seção, exploramos os textos dos hinos presentes na coletânea.
+
+A primeira parte da análise foca no tamanho dos textos dos hinos, medido em número de palavras. Para 
+essa análise, consideramos todas as palavras. Isso porque são textos de hinos, onde cada palavra
+é cantada, o que influencia no tamanho percebido do hino.
+"""
+
+explicacao_filtros = """
+Importante: as explicações deste texto se baseiam na coletânea como um todo, sem aplicação de filtros, já que estes
+alteram os resultados ilustrados nos gráficos.
+"""
+st.caption(explicacao_filtros)
+
+"""
+As tabelas a seguir mostram os 10 hinos com maior e menor número de palavras, respectivamente.
+"""
 
 
 # Exploração dos textos (eda1_part3.1):
@@ -34,14 +54,11 @@ if categorias_selecionadas:
         hinos_analise["categoria_abr"].isin(categorias_selecionadas)
     ]
 
-# texto explicativo sobre stopwords e tokenização
-
-# texto explicando tamanho dos tokens com stopwords pra dizer os maiores
 
 col1, col2 = st.columns(2)
 
 with col1:
-    st.markdown("Top 10 maiores louvores")
+    st.markdown("**Top 10 maiores louvores**")
 
     st.dataframe(
         hinos_analise[["nome", "num_tokens"]]
@@ -59,7 +76,7 @@ with col1:
         },
     )
 with col2:
-    st.markdown("Top 10 menores louvores")
+    st.markdown("**Top 10 menores louvores**")
 
     st.dataframe(
         hinos_analise[["nome", "num_tokens"]]
@@ -77,6 +94,14 @@ with col2:
         },
     )
 
+
+"""
+A diferença de quantidade de palavras entre os maiores hinos é pequena, com exceção do primeiro lugar -- Hino 459, 
+com 72 palavras a mais que o segundo colocado. Entre os menores hinos, percebe-se pouca diferença entre os 10 primeiros. 
+Interessantemente, o menor hino da coletânea, Hino 15, também contém 15 palavras, uma coincidência curiosa.
+
+A análise continua com a visualização da relação entre o número de palavras e a categoria dos hinos.
+"""
 
 # boxplot
 # Garantir que 'categoria_id' é tratado como uma variável categórica
@@ -99,17 +124,44 @@ if hinos_analise.empty:
         "Nenhuma categoria selecionada ou não há dados para as categorias escolhidas."
     )
 else:
-    fig = px.box(
-        hinos_analise,
-        x="categoria_abr",
-        y="num_tokens",
-        points="all",
-        hover_data=["nome"],
-        labels={"categoria_abr": "Categoria", "num_tokens": "Número de Tokens"},
-        title="Relação Entre Número de Tokens e Categoria (Box Plot)",
+    # Boxplot com Altair + pontos sobrepostos
+    # Garantir que todas as categorias apareçam no eixo X, com rotação de 90 graus
+    categorias_todas = categoria_mapping.tolist()
+
+    box = (
+        alt.Chart(hinos_analise)
+        .mark_boxplot(extent="min-max")
+        .encode(
+            x=alt.X(
+                "categoria_abr:N",
+                title="Categoria",
+                sort=categorias_todas,
+                scale=alt.Scale(domain=categorias_todas),
+                axis=alt.Axis(labelAngle=270),
+            ),
+            y=alt.Y("num_tokens:Q", title="Número de Palavras"),
+        )
     )
-    fig.update_layout(xaxis_tickangle=-45, boxmode="group")
-    st.plotly_chart(fig, use_container_width=True)
+
+    chart = (box).properties(
+        title="Relação Entre Número de Palavras e Categoria", width="container"
+    )
+
+    st.altair_chart(chart, use_container_width=True)
+
+
+"""
+
+
+
+
+Após passarem por um pré-processamento que inclui remoção de stopwords e tokenização.
+
+Uma breve explicação dos termos:
+- **Tokenização**: processo de dividir o texto em unidades menores, chamadas tokens (geralmente palavras).
+- **Stopwords**: palavras comuns que geralmente não carregam muito significado (como "e", "o", "de" em português) 
+e são removidas para focar nas palavras mais relevantes.
+"""
 
 
 # - Total de palavras únicas e mais longas

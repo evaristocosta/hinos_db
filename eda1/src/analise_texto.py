@@ -128,22 +128,41 @@ else:
     # Garantir que todas as categorias apareçam no eixo X, com rotação de 90 graus
     categorias_todas = categoria_mapping.tolist()
 
+    mean_tokens = float(hinos_analise["num_tokens"].mean())
+
     box = (
         alt.Chart(hinos_analise)
-        .mark_boxplot(extent="min-max")
+        .mark_boxplot()
         .encode(
             x=alt.X(
                 "categoria_abr:N",
                 title="Categoria",
                 sort=categorias_todas,
                 scale=alt.Scale(domain=categorias_todas),
-                axis=alt.Axis(labelAngle=270),
+                axis=alt.Axis(labelAngle=90),
             ),
             y=alt.Y("num_tokens:Q", title="Número de Palavras"),
         )
     )
 
-    chart = (box).properties(
+    mean_df = pd.DataFrame({"mean": [mean_tokens]})
+
+    # Linha pontilhada da média
+    mean_rule = (
+        alt.Chart(mean_df)
+        .mark_rule(strokeDash=[6, 4], size=1)
+        .encode(y=alt.Y("mean:Q"))
+    )
+
+    # Rótulo com o valor da média (colocado à esquerda da área do gráfico)
+    mean_label = (
+        alt.Chart(mean_df)
+        .mark_text(align="left", dx=6, dy=-6)
+        .encode(y=alt.Y("mean:Q"), text=alt.Text("mean:Q", format=".1f"))
+        .encode(x=alt.value(0))
+    )
+
+    chart = (box + mean_rule + mean_label).properties(
         title="Relação Entre Número de Palavras e Categoria", width="container"
     )
 
@@ -151,14 +170,40 @@ else:
 
 
 """
+A média de palavras por hino é de 100.5 palavras, indicada pela linha pontilhada 
+azul no gráfico acima. Os hinos da categoria "GRUPO DE LOUVOR" são os que apresentam maior
+média de palavras (116), enquanto que "CORINHOS" tem a menor média (45), muito embora 
+tenha outliers que chegam a 261 palavras (Sequência de Louvores Nº 1). A categoria com maior
+variação na quantia de palavras é a de "SANTIFICAÇÃO E DERRAMAMENTO DO ESPÍRITO SANTO", com
+hinos de vão de 24 a 345 palavras, sendo este o maior hino da coletânea.
 
+A seguir, pode pesquisar o número de palavras de um hino específico:
 
+"""
+col1, col2 = st.columns(2)
+with col1:
+    # pesquisa de numero de palavras por hino
+    hymn_num = st.number_input(
+        "Número do hino",
+        min_value=int(hinos_analise.index.min()),
+        max_value=int(hinos_analise.index.max()),
+        value=int(hinos_analise.index.min()),
+    )
+with col2:
+    hymn_title = hinos_analise.loc[hymn_num, "nome"]
+    hymn_num_words = hinos_analise.loc[hymn_num, "num_tokens"]
+    st.write(
+        f"🎵 Hino {hymn_num} -- {hymn_title}:<br>**{hymn_num_words} palavras**",
+        unsafe_allow_html=True,
+    )
 
-
-Após passarem por um pré-processamento que inclui remoção de stopwords e tokenização.
+"""
+Para prosseguir com a análise textual, precisamos realizar algumas etapas de 
+pré-processamento nos dados. Isso inclui a *tokenização* e remoção de *stopwords*.
 
 Uma breve explicação dos termos:
-- **Tokenização**: processo de dividir o texto em unidades menores, chamadas tokens (geralmente palavras).
+- **Tokenização**: processo de dividir o texto em unidades menores, chamadas tokens (geralmente palavras -- similar
+ao que fizemos nas etapas anteriores).
 - **Stopwords**: palavras comuns que geralmente não carregam muito significado (como "e", "o", "de" em português) 
 e são removidas para focar nas palavras mais relevantes.
 """
@@ -167,33 +212,57 @@ e são removidas para focar nas palavras mais relevantes.
 # - Total de palavras únicas e mais longas
 st.markdown("### Estatísticas de Vocabulário")
 palavras = hinos_analise["tokens_no_stops"].explode().tolist()
-st.write(f"**Total de palavras:** {len(palavras)}")
-# find the 10 largest words
 palavras_unicas = list(set(palavras))
 palavras_unicas.sort(key=len, reverse=True)
 
-st.write(f"**Total de palavras únicas:** {len(palavras_unicas)}")
+texto_se_filtro = (
+    f" considerando as categorias selecionadas ({', '.join(categorias_selecionadas)}), "
+    if categorias_selecionadas
+    else ""
+)
+f"""
+Na coletânea, {texto_se_filtro}existem um total de {len(palavras)} palavras, das quais {len(palavras_unicas)} 
+são únicas, ou seja, aparecem apenas uma vez no conjunto de hinos.
+
+As 10 maiores palavras são as seguintes:
+"""
+
+
 mais_longas = pd.DataFrame(
     {
         "palavra": palavras_unicas[:10],
         "tamanho": [len(palavra) for palavra in palavras_unicas[:10]],
     }
 )
-st.markdown("#### 10 Palavras Mais Longas")
-st.bar_chart(
-    data=mais_longas,
-    x="palavra",
-    y="tamanho",
-    y_label="Tamanho da palavra",
-    x_label="Palavra",
-    horizontal=True,
-    sort=False,
-    width="stretch",
+
+# Gráfico Altair das palavras mais longas
+chart = (
+    alt.Chart(mais_longas)
+    .mark_bar()
+    .encode(
+        x=alt.X("tamanho:Q", title="Tamanho da palavra"),
+        y=alt.Y(
+            "palavra:N",
+            sort=alt.EncodingSortField(field="tamanho", order="descending"),
+            title="Palavra",
+        ),
+        tooltip=[
+            alt.Tooltip("palavra:N", title="Palavra"),
+            alt.Tooltip("tamanho:Q", title="Tamanho"),
+        ],
+    )
+    .properties(title="Top 10 palavras mais longas", width="container", height=300)
 )
+
+st.altair_chart(chart, use_container_width=True)
 
 
 # - Histograma de frequência de tamanhos
 # Histograma interativo: distribuição do tamanho das palavras (tokens sem stopwords)
+"""
+Se analisarmos o tamanho das palavras (em número de caracteres), podemos observar a distribuição
+desses tamanhos no histograma abaixo.
+"""
 
 
 # Extrair tamanhos das palavras (tratando casos vazios)
@@ -211,7 +280,6 @@ else:
     # Estatísticas
     media = np.mean(line_num_words)
     mediana = np.median(line_num_words)
-    total = len(line_num_words)
 
     # Gráfico interativo com Plotly
     max_len = int(max(line_num_words)) if line_num_words else 1
@@ -219,7 +287,7 @@ else:
         df_lengths,
         x="length",
         nbins=max_len,
-        color_discrete_sequence=["#2a9d8f"],
+        # color_discrete_sequence=["#2a9d8f"],
         title="Distribuição dos tamanhos das palavras (tokens sem stopwords)",
         labels={
             "length": "Tamanho da palavra (número de caracteres)",
@@ -231,14 +299,14 @@ else:
     fig.add_vline(
         x=media,
         line=dict(color="#e76f51", dash="dash"),
-        annotation_text=f"Média: {media:.2f}",
-        annotation_position="top right",
+        # annotation_text=f"Média: {media:.2f}",
+        # annotation_position="top right",
     )
     fig.add_vline(
         x=mediana,
         line=dict(color="#264653", dash="dashdot"),
-        annotation_text=f"Mediana: {mediana:.0f}",
-        annotation_position="top right",
+        # annotation_text=f"Mediana: {mediana:.0f}",
+        # annotation_position="top right",
     )
 
     # Caixa de anotação com total e média
@@ -247,11 +315,11 @@ else:
         y=0.95,
         xref="paper",
         yref="paper",
-        text=f"Total palavras: {total}<br>Média: {media:.2f}",
+        text=f"Média: {media:.2f}<br>Mediana: {mediana:.0f}",
         showarrow=False,
         align="right",
         # bgcolor="white",
-        bordercolor="black",
+        # bordercolor="black",
     )
 
     fig.update_layout(xaxis=dict(dtick=1), bargap=0.05)
@@ -260,7 +328,12 @@ else:
     st.plotly_chart(fig, use_container_width=True)
 
 
+"""
+Podemos notar que a maioria das palavras tem entre 3 e 7 caracteres, com picos em 5 e 6 caracteres.
+"""
+
 # - Bag-of-words com plot
+
 set_words_full = list(set(palavras))
 count_words = [palavras.count(i) for i in set_words_full]
 

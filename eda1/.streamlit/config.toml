@@ -3,4 +3,5 @@ primaryColor = "#2E5A87"           # azul escuro científico
 backgroundColor = "#FFFFFF"        # fundo branco puro
 secondaryBackgroundColor = "#F4F6F9" # cinza muito claro
 textColor = "#1C1C1C"              # texto quase preto
-font = "sans serif"                # fontes tipo Helvetica, Arial
+font = "sans-serif"      # Main body text uses a sans-serif font
+headingFont = "serif"    # All headings/titles use a serif font

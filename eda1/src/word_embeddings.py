@@ -8,7 +8,14 @@ from sklearn.decomposition import NMF
 
 #    Word embeddings (eda1_part4):
 
-st.markdown("# Embeddings de palavras 📝")
+"""
+# Embeddings de palavras 📝
+
+Nesta seção, exploramos os embeddings de palavras gerados a partir dos textos dos hinos.
+Utilizamos técnicas de processamento de linguagem natural para transformar os textos em representações 
+vetoriais densas, que capturam o significado semântico das palavras. Esses embeddings permitem analisar 
+similaridades entre hinos, realizar clustering e identificar tópicos comuns.
+"""
 
 hinos_analise: pd.DataFrame = hinos_processados()
 hinos_analise["word_cluster"] = hinos_analise["word_cluster"].astype("category")
@@ -16,20 +23,53 @@ hinos_analise["NMF_topic"] = hinos_analise["NMF_topic"].astype("category")
 # hinos_analise = hinos_analise.rename_axis("Nº")
 similarity_word, _ = similarity_matrices()
 
+st.sidebar.header("Filtros")
+categorias_unicas = hinos_analise["categoria_abr"].unique()
+categorias_selecionadas = st.sidebar.multiselect(
+    "Selecione as categorias",
+    options=categorias_unicas,
+    placeholder="Todas as categorias",
+)
+if categorias_selecionadas:
+    hinos_analise = hinos_analise[
+        hinos_analise["categoria_abr"].isin(categorias_selecionadas)
+    ]
+
 # - Matrizes de similaridade com heatmap
-st.markdown("## Matriz de Similaridade entre Hinos (Word Embeddings)")
+"""
+## Matriz de Similaridade entre Hinos
+
+Aqui, visualizamos a matriz de similaridade entre os hinos com base nos embeddings de palavras. Cada célula na matriz 
+representa o grau de similaridade entre dois hinos, onde valores mais altos indicam maior similaridade semântica.
+
+estratégia de peso: TF-IDF
+"""
 
 fig = px.imshow(
     similarity_word,
     labels=dict(x="Hinos", y="Hinos", color="Similaridade"),
+    width=600,
+    height=600,
 )
 st.plotly_chart(fig)
 
+"""
+Diferentemente da matriz de similaridade baseada em TF-IDF, que se concentra na frequência e importância das palavras 
+nos documentos, a matriz de similaridade baseada em embeddings de palavras captura relações semânticas mais profundas 
+entre os hinos. Isso significa que hinos com significados semelhantes, mesmo que usem palavras diferentes, podem ser 
+identificados como similares, o que explica porque mais hinos aparecem como similares nesta matriz.
+
+Dois hinos que chamam a atenção são 106 - "Pela fé somos salvos" e 179 - "Pela fé eu posso contemplar Jesus": ambos tem 
+baixa similaridade com a maioria dos outros hinos, mas alta similaridade entre si. Isso sugere que, apesar de usarem 
+palavras diferentes, eles compartilham um significado semântico semelhante, relacionado ao tema da fé e salvação.
+"""
+
 # - Hinos mais semelhantes
-st.markdown("## Hinos mais semelhantes")
-st.markdown(
-    "Selecione um hino para ver os mais semelhantes com base nos embeddings de palavras."
-)
+"""
+## Hinos mais semelhantes
+
+A seguir, selecione um hino para ver os mais semelhantes com base nos embeddings de palavras.
+"""
 
 hymn_num = st.number_input(
     "Número do hino",
@@ -37,23 +77,42 @@ hymn_num = st.number_input(
     max_value=int(hinos_analise.index.max()),
     value=106,  # um bom exemplo pra iniciar
 )
+hymn_name = hinos_analise.loc[hymn_num, "nome"]
+st.markdown(f"**🎵 Hino {hymn_num} — {hymn_name}:**")
 
 similarities_tfidf = list(enumerate(similarity_word.iloc[hymn_num]))
 similarities_tfidf = sorted(similarities_tfidf, key=lambda x: x[1], reverse=True)
 
-st.markdown(
-    "Mais parecidos com o hino "
-    + str(hymn_num)
-    + ": "
-    + hinos_analise["nome"].iloc[hymn_num]
-)
-for idx, score in similarities_tfidf[1:6]:
-    st.markdown(
-        f"Hino {idx}: {hinos_analise['nome'].iloc[idx]} → similaridade {score:.3f}"
+rows = []
+for idx, score in similarities_tfidf[1:11]:
+    rows.append(
+        {
+            "Hino": int(idx),
+            "Nome": hinos_analise["nome"].iloc[idx],
+            "Similaridade": float(score),
+        }
     )
+df_sim = pd.DataFrame(rows).set_index("Hino")
+st.dataframe(df_sim.style.format({"Similaridade": "{:.3f}"}))
 
 # - Clustering
-st.markdown("## Clustering de Hinos com Embeddings de Palavras")
+# Diminuição de dimensionalidade: UMAP
+# Clustering: K-Means
+# Definição de clusters: silhueta - 4º melhor valor, 10 clusters
+"""
+## Clustering de Hinos
+
+Utilizando os embeddings de palavras, aplicamos técnicas de redução de dimensionalidade (UMAP) e clustering (K-Means) para 
+agrupar os hinos com base em suas similaridades semânticas. A visualização abaixo mostra os hinos em um espaço bidimensional,
+onde cores diferentes representam clusters distintos. 
+
+Cada ponto representa um hino, e a proximidade entre os pontos indica similaridade semântica. Clusters próximos
+sugerem temas ou estilos comuns entre os hinos agrupados. 
+
+A definição dos clusters foi baseada na análise de silhueta, resultando em 10 clusters que capturam bem as variações 
+nos temas dos hinos. 
+
+"""
 
 fig = px.scatter(
     hinos_analise,
@@ -63,22 +122,41 @@ fig = px.scatter(
     hover_data=["nome"],
     # title="Clustering de Hinos com Embeddings de Palavras",
     labels={"word_umap1": "", "word_umap2": "", "word_cluster": "Cluster"},
+    width=600,
+    height=600,
 )
 st.plotly_chart(fig)
 
 # - Termos mais frequentes por cluster
-st.markdown("## Termos mais frequentes por cluster")
+"""
+### Termos mais frequentes por cluster
+
+A seguir, apresentamos os termos mais frequentes em cada cluster de hinos, conforme identificado pelo algoritmo de clustering.
+Esses termos fornecem insights sobre os temas predominantes em cada grupo de hinos. 
+
+"""
 
 
+rows = []
 for c in sorted(hinos_analise["word_cluster"].unique()):
     cluster_tokens = hinos_analise.loc[
         hinos_analise["word_cluster"] == c, "tokens_no_stops"
     ].sum()
-    top_terms = Counter(cluster_tokens).most_common(10)
+    top_terms = [t for t, _ in Counter(cluster_tokens).most_common(10)]
+    top_hinos = (
+        hinos_analise.loc[hinos_analise["word_cluster"] == c, "nome"].head(3).tolist()
+    )
 
-    st.markdown(f"\n**Cluster {c}:**")
-    st.markdown([t for t, _ in top_terms])
-    # st.markdown(hinos_analise.loc[hinos_analise["word_cluster"] == c, "nome"][:3])
+    rows.append(
+        {
+            "Cluster": str(c),
+            "Top terms": ", ".join(top_terms),
+            "Top hinos": " | ".join(top_hinos),
+        }
+    )
+
+df_clusters = pd.DataFrame(rows).set_index("Cluster")
+st.dataframe(df_clusters)
 
 # - Tópicos comuns
 st.markdown("## Tópicos comuns entre os hinos")

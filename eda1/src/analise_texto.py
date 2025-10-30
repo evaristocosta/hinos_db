@@ -17,7 +17,7 @@ essa análise, consideramos todas as palavras. Isso porque são textos de hinos,
 """
 
 explicacao_filtros = """
-Importante: as explicações deste texto se baseiam na coletânea como um todo, sem aplicação de filtros, já que estes
+**Importante:** as explicações deste texto se baseiam na coletânea como um todo, sem aplicação de filtros, já que estes
 alteram os resultados ilustrados nos gráficos.
 """
 st.caption(explicacao_filtros)
@@ -206,6 +206,10 @@ Uma breve explicação dos termos:
 ao que fizemos nas etapas anteriores).
 - **Stopwords**: palavras comuns que geralmente não carregam muito significado (como "e", "o", "de" em português) 
 e são removidas para focar nas palavras mais relevantes.
+
+**Importante:** o pré-processamento inclui transformar todas as palavras para minúsculas, remover pontuações e caracteres especiais.
+Portanto, palavras como "Jesus", "Deus", "Cristo" e "Senhor" serão tratadas como "jesus", "deus", "cristo" e "senhor", meramente
+por questões de análise textual.
 """
 
 

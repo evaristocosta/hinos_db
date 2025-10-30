@@ -221,7 +221,7 @@ texto_se_filtro = (
     else ""
 )
 f"""
-Na coletânea, {texto_se_filtro}existem um total de {len(palavras)} palavras, das quais {len(palavras_unicas)} 
+Na coletânea, {texto_se_filtro}existe um total de {len(palavras)} palavras, das quais {len(palavras_unicas)} 
 são únicas, ou seja, aparecem apenas uma vez no conjunto de hinos.
 
 As 10 maiores palavras são as seguintes:
@@ -251,7 +251,7 @@ chart = (
             alt.Tooltip("tamanho:Q", title="Tamanho"),
         ],
     )
-    .properties(title="Top 10 palavras mais longas", width="container", height=300)
+    .properties(title="Top 10 palavras mais longas", width="container", height=400)
 )
 
 st.altair_chart(chart, use_container_width=True)
@@ -329,7 +329,9 @@ else:
 
 
 """
-Podemos notar que a maioria das palavras tem entre 3 e 7 caracteres, com picos em 5 e 6 caracteres.
+Podemos notar que a maioria das palavras tem entre 3 e 7 caracteres, com picos em 5 e 6 caracteres. Isso indica 
+que a distribuição dos tamanhos das palavras é ligeiramente assimétrica, com uma tendência para palavras um 
+pouco mais curtas.
 """
 
 # - Bag-of-words com plot
@@ -343,21 +345,85 @@ contagem_palav = pd.DataFrame(
 contagem_palav = contagem_palav.sort_values("contagem", ascending=False)
 contagem_palav["percentual"] = contagem_palav["contagem"] / len(palavras) * 100
 
-st.markdown("### Bag-of-Words")
-st.markdown("#### Top 20 palavras mais frequentes (sem stopwords)")
-st.bar_chart(
-    contagem_palav.head(20),
-    x="palavra",
-    y="contagem",
-    x_label="Palavra",
-    y_label="Contagem",
-    horizontal=True,
-    sort=False,
+"""
+## Bag-of-Words
+
+A técnica de Bag-of-Words (BoW) é uma representação simples e eficaz de textos, onde cada documento é representado
+como uma "sacola" de suas palavras, ignorando a ordem e a gramática, mas mantendo a frequência de cada palavra.
+Aqui, aplicamos a técnica de Bag-of-Words aos hinos da coletânea, considerando apenas as palavras que não são
+stopwords.
+
+A seguir, apresentamos as 20 palavras mais frequentes nos hinos, juntamente com suas contagens e percentuais.
+
+"""
+
+
+top20 = contagem_palav.head(20).copy()
+# garantir a ordem no eixo Y (mais frequente no topo)
+top20["palavra"] = pd.Categorical(
+    top20["palavra"], categories=top20["palavra"].tolist()[::-1], ordered=True
+)
+
+chart = (
+    alt.Chart(top20)
+    .mark_bar()
+    .encode(
+        x=alt.X("contagem:Q", title="Contagem"),
+        y=alt.Y(
+            "palavra:N",
+            title="Palavra",
+            sort=alt.EncodingSortField(field="contagem", order="descending"),
+        ),
+        tooltip=[
+            alt.Tooltip("palavra:N", title="Palavra"),
+            alt.Tooltip("contagem:Q", title="Contagem"),
+            alt.Tooltip("percentual:Q", title="Percentual", format=".2f"),
+        ],
+        # color=alt.value("#4c78a8"),
+    )
+    .properties(
+        height=600,
+        width="container",
+        title="Top 20 palavras mais frequentes (sem stopwords)",
+    )
+)
+
+labels = (
+    alt.Chart(top20)
+    .mark_text(align="left", dx=3, dy=0, color="#000")
+    .encode(
+        x=alt.X("contagem:Q"),
+        y=alt.Y(
+            "palavra:N",
+            sort=alt.EncodingSortField(field="contagem", order="descending"),
+        ),
+        text=alt.Text("contagem:Q"),
+    )
+)
+
+st.altair_chart(
+    (chart + labels).configure_axis(labelFontSize=12, titleFontSize=13),
     use_container_width=True,
 )
 
+
+"""
+As palavras mais frequentes refletem temas comuns nos hinos, como "Senhor", "Jesus", e "Deus". Isso indica a ênfase 
+da coletânea: a adoração a Jesus como Deus, o único Senhor. Além disso, palavras como "amor", "glória", e "vem" 
+são frequentemente mencionadas, destacando temas de importância: o amor de Deus, a glória do Senhor, e o clamor da 
+igreja à Jesus: vem!
+
+"""
+
 # - Wordcloud
-st.markdown("### Wordcloud")
+"""
+## Wordcloud
+
+
+A Wordcloud é uma representação visual das palavras mais frequentes em um texto, onde o tamanho de cada palavra
+indica sua frequência. A seguir, apresentamos a Wordcloud das palavras mais frequentes nos hinos da coletânea.
+
+"""
 word_freq_dict = dict(zip(contagem_palav["palavra"], contagem_palav["contagem"]))
 
 from wordcloud import WordCloud
@@ -377,7 +443,7 @@ wordcloud = WordCloud(
 fig, ax = plt.subplots(figsize=(12, 6))
 ax.imshow(wordcloud, interpolation="bilinear")
 ax.axis("off")
-ax.set_title("Word Cloud - Palavras mais frequentes nos hinos", fontsize=16, pad=20)
+# ax.set_title("Word Cloud - Palavras mais frequentes nos hinos", fontsize=16, pad=20)
 plt.tight_layout()
 st.pyplot(fig, use_container_width=True)
 plt.close(fig)

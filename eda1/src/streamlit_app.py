@@ -9,7 +9,7 @@ st.markdown(
         /* Corpo geral */
         .main {
             background-color: #ffffff;
-            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-family: 'Times New Roman', 'Georgia', serif;
             color: #1c1c1c;
             line-height: 1.6;
         }

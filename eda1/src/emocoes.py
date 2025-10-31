@@ -4,21 +4,30 @@ from pipeline import hinos_processados
 import plotly.express as px
 
 # Emoções (eda1_part7):
-st.markdown("# Análise de emoções nos hinos 🎭")
+st.title("Análise de emoções nos hinos 🎭")
 
 hinos_analise: pd.DataFrame = hinos_processados()
 
 # - Visualização e estatísticas
-st.markdown("## Distribuição das emoções dominantes")
+"""
+# Distribuição das emoções dominantes
+
+"""
 
 emocoes_dominantes = []
 scores_dominantes = []
 
 for emocoes in hinos_analise["emocoes"]:
     if emocoes:
-        top_emocao = max(emocoes.items(), key=lambda x: x[1])
-        emocoes_dominantes.append(top_emocao[0])
-        scores_dominantes.append(top_emocao[1])
+        # Remove 'neutral' se existir
+        emocoes_filtrado = {k: v for k, v in emocoes.items() if k != "neutral"}
+        if emocoes_filtrado:
+            top_emocao = max(emocoes_filtrado.items(), key=lambda x: x[1])
+            emocoes_dominantes.append(top_emocao[0])
+            scores_dominantes.append(top_emocao[1])
+        else:
+            emocoes_dominantes.append("unknown")
+            scores_dominantes.append(0.0)
     else:
         emocoes_dominantes.append("unknown")
         scores_dominantes.append(0.0)
@@ -49,12 +58,17 @@ st.plotly_chart(fig)
 
 
 # - Heatmap de emoções
-st.markdown("## Heatmap das emoções nos hinos")
+"""
+# Heatmap das emoções nos hinos
+
+"""
 
 emocoes_expandidas = []
 for idx, row in hinos_analise.iterrows():
     if row["emocoes"]:
-        emocoes_expandidas.append(row["emocoes"])
+        emocoes_filtrado = {k: v for k, v in row["emocoes"].items() if k != "neutral"}
+        if emocoes_filtrado:
+            emocoes_expandidas.append(emocoes_filtrado)
 
 if emocoes_expandidas:
     emo_df = pd.DataFrame(emocoes_expandidas)
@@ -78,4 +92,7 @@ if emocoes_expandidas:
     )
 
 # - Pesquisa de hinos e mostrar emoções
-st.markdown("## Pesquisa de hinos por emoções")
+"""
+# Pesquisa de hinos por emoções
+
+"""

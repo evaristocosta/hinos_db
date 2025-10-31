@@ -9,9 +9,8 @@ import plotly.express as px
 import altair as alt
 
 
+st.title("Análise de palavras ✒️")
 """
-# Análise de palavras ✒️
-
 Nesta seção, exploramos as palavras presentes nos hinos através de n-gramas e análise de similaridade utilizando TF-IDF. 
 """
 
@@ -32,7 +31,7 @@ if categorias_selecionadas:
 
 # - N-gramas
 """
-## N-gramas
+# N-gramas
 
 Aqui, analisamos os n-gramas (bigramas e trigramas) mais frequentes nos hinos. N-gramas são sequências 
 contíguas de 'n' itens (palavras, neste caso) em um texto. Bigramas são pares de palavras consecutivas, 
@@ -140,7 +139,7 @@ padronização linguística. Isso pode ser sinal de tradição, estilo de compos
 
 # - Matriz de similaridade TF-IDF
 """
-## Matriz de similaridade TF-IDF
+# Matriz de similaridade TF-IDF
 
 Aqui, utilizamos a técnica de TF-IDF (Term Frequency-Inverse Document Frequency) para transformar os 
 textos dos hinos em vetores numéricos, considerando de unigramas a trigramas. Em seguida, calculamos a 
@@ -188,7 +187,7 @@ mais aprofundadas sobre padrões de composição ou conteúdo.
 # - Ranking de termos mais relevantes
 
 """
-## Hinos mais similares e termos mais relevantes
+# Hinos mais similares e termos mais relevantes
 
 A seguir, é possível selecionar um hino específico para ver quais termos (unigramas, bigramas e trigramas)
 são mais relevantes para ele, de acordo com os pesos TF-IDF calculados anteriormente.

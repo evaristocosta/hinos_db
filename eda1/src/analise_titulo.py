@@ -30,9 +30,9 @@ hinos_analise["titulo_tam_real"] = hinos_analise["Nome"].str.len()
 hinos_titulos["titulo_tam_real"] = hinos_titulos["Nome"].str.len()
 
 
-st.markdown("# Tamanho dos títulos")
+st.title("Tamanho dos títulos 🔢")
 
-descricao_inicial = """
+"""
 Nesta seção, analisamos o tamanho dos títulos dos hinos na coletânea, tanto considerando
 os títulos principais quanto os subtítulos. São considerados subtítulos aqueles que aparecem
 entre parênteses no título. A coluna da esquerda mostra os resultados desconsiderando os subtítulos, 
@@ -44,7 +44,7 @@ O tamanho aqui, é medido em número de caracteres, considerando espaços.
 
 É possível usar o filtro na barra lateral para restringir a análise a categorias específicas de hinos.
 """
-st.markdown(descricao_inicial)
+
 
 st.sidebar.markdown("# Filtros")
 # add filter by category
@@ -134,7 +134,7 @@ with col2:
     )
 
 
-descricao_final = """
+"""
 Observamos que a inclusão dos subtítulos altera a lista dos maiores e menores títulos. De forma geral,
 os oito primeiros hinos com maiores títulos permanecem os mesmos, sendo que o maior título contém 46 caracteres, 
 ocorrendo três vezes (hinos 323, 511 e 612).
@@ -144,25 +144,31 @@ a composição dos dez menores títulos. O menor título absoluto, com apenas qu
 
 Por fim, parece não haver uma correlação clara entre o tamanho do título e a categoria do hino, sugerindo que a 
 extensão do título não está diretamente relacionada ao tema abordado.
+
+
+## Medidor de título
+
+Selecione um hino para ver o tamanho do seu título, e comparar com outros hinos com título de igual tamanho.
 """
-st.markdown(descricao_final)
 
+col1, col2 = st.columns(2)
 
-st.markdown("## Medidor de título")
-st.markdown(
-    "Selecione um hino para ver o tamanho do seu título, e comparar com outros hinos com título de igual tamanho."
-)
+with col1:
+    hymn_num = st.number_input(
+        "Número do hino",
+        min_value=int(hinos_analise.index.min()),
+        max_value=int(hinos_analise.index.max()),
+        value=int(hinos_analise.index.min()),
+    )
+    hymn_title = hinos_analise.loc[hymn_num, "Nome"]
+    hymn_title_size = hinos_analise.loc[hymn_num, "titulo_tam_real"]
 
-hymn_num = st.number_input(
-    "Número do hino",
-    min_value=int(hinos_analise.index.min()),
-    max_value=int(hinos_analise.index.max()),
-    value=int(hinos_analise.index.min()),
-)
-hymn_title = hinos_analise.loc[hymn_num, "Nome"]
-hymn_title_size = hinos_analise.loc[hymn_num, "titulo_tam_real"]
+with col2:
+    st.markdown(
+        f"**🎵 Hino {hymn_num} — {hymn_title}:** <br>*{hymn_title_size} caracteres*",
+        unsafe_allow_html=True,
+    )
 
-st.markdown(f"🎵 Hino {hymn_num} — {hymn_title}: *{hymn_title_size} caracteres*")
 hinos_mesmo_tamanho = hinos_analise[
     hinos_analise["titulo_tam_real"] == hymn_title_size
 ].drop(index=hymn_num)

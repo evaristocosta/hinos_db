@@ -5,10 +5,8 @@ import plotly.express as px
 import altair as alt
 from pipeline import hinos_processados
 
-
+st.title("Exploração de palavras 🔡")
 """
-# Exploração de palavras 🔡
-
 Nesta seção, exploramos os textos dos hinos presentes na coletânea.
 
 A primeira parte da análise foca no tamanho dos textos dos hinos, medido em número de palavras. Para 

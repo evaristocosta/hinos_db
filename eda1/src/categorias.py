@@ -39,13 +39,13 @@ if not categorias_count.empty:
 else:
     categorias_count["bar_type"] = []
 
-st.markdown("# Categoria dos louvores")
+st.title("Categoria dos louvores 📑")
 
-descricao_pagina = """
+"""
 Nesta seção, exploramos a distribuição de hinos por categoria da coletânea.
 Tais categorias são definidas pela própria coletânea.
 """
-st.markdown(descricao_pagina)
+
 
 sort_by = st.selectbox(
     "Ordenar por:",
@@ -99,8 +99,7 @@ st.altair_chart(chart, use_container_width=True)
 
 
 # conclusões
-# st.markdown("## Conclusões")
-conclusao_texto = """
+"""
 A análise dos dados indica o seguinte:
 
 - A categoria "DEDICAÇÃO" é a maior em quantidade, com 104 hinos (13,08%), sendo a categoria mais representada.
@@ -116,4 +115,3 @@ certa variedade, mas com clara concentração em algumas temáticas centrais da 
 Essas conclusões indicam as ênfases temáticas da coletânea, com maior foco em dedicação e 
 esperança, enquanto louvor de categorias de salmos e invocação têm menos destaque.
 """
-st.markdown(conclusao_texto)

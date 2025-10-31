@@ -41,14 +41,13 @@ if categorias_selecionadas:
     ]
 
 
-st.markdown("# Tabela de louvores")
+st.title("Tabela de louvores 📆")
 
-st.markdown(
-    """
+"""
 A tabela a seguir representa a base de dados de hinos utilizada para as análises presentes neste projeto. Ela também
 pode ser usada para pesquisa de hinos específicos, utilizando os filtros disponíveis na barra lateral.
 """
-)
+
 
 st.dataframe(
     hinos_filtrado[

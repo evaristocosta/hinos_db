@@ -7,10 +7,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import NMF
 
 #    Word embeddings (eda1_part4):
+st.title("Embeddings de Palavras 📝")
 
 """
-# Embeddings de palavras 📝
-
 Nesta seção, exploramos os embeddings de palavras gerados a partir dos textos dos hinos.
 Utilizamos técnicas de processamento de linguagem natural para transformar os textos em representações 
 vetoriais densas, que capturam o significado semântico das palavras. Esses embeddings permitem analisar 
@@ -36,13 +35,14 @@ if categorias_selecionadas:
     ]
 
 # - Matrizes de similaridade com heatmap
+# estratégia de peso: TF-IDF
 """
-## Matriz de Similaridade entre Hinos
+# Matriz de Similaridade entre Hinos
 
-Aqui, visualizamos a matriz de similaridade entre os hinos com base nos embeddings de palavras. Cada célula na matriz 
-representa o grau de similaridade entre dois hinos, onde valores mais altos indicam maior similaridade semântica.
+Aqui, visualizamos a matriz de similaridade entre os hinos com base nos embeddings de palavras, calculada a partir da 
+estratégia de peso TF-IDF. Cada célula na matriz representa o grau de similaridade entre dois hinos, onde valores 
+mais altos indicam maior similaridade semântica.
 
-estratégia de peso: TF-IDF
 """
 
 fig = px.imshow(
@@ -66,7 +66,7 @@ palavras diferentes, eles compartilham um significado semântico semelhante, rel
 
 # - Hinos mais semelhantes
 """
-## Hinos mais semelhantes
+# Hinos mais semelhantes
 
 A seguir, selecione um hino para ver os mais semelhantes com base nos embeddings de palavras.
 """
@@ -100,7 +100,7 @@ st.dataframe(df_sim.style.format({"Similaridade": "{:.3f}"}))
 # Clustering: K-Means
 # Definição de clusters: silhueta - 4º melhor valor, 10 clusters
 """
-## Clustering de Hinos
+# Clustering de Hinos
 
 Utilizando os embeddings de palavras, aplicamos técnicas de redução de dimensionalidade (UMAP) e clustering (K-Means) para 
 agrupar os hinos com base em suas similaridades semânticas. A visualização abaixo mostra os hinos em um espaço bidimensional,
@@ -127,13 +127,22 @@ fig = px.scatter(
 )
 st.plotly_chart(fig)
 
+"""
+O agrupamento resultante permite dividir claramente os hinos em diferentes categorias. No geral, todos os hinos partilham
+de um espaço comum. No entanto, alguns clusters se destacam por sua separação mais clara, indicando temas ou estilos únicos.
+Por exemplo, os clusters 8 e 6 tem parte no espaço comum, mas também possuem áreas distintas, sugerindo que embora
+compartilhem algumas características com outros hinos, eles também possuem elementos únicos que os diferenciam. 
+O cluster 9, por outro lado, está totalmente isolado no canto superior direito, indicando que os hinos nesse grupo 
+são semanticamente distintos dos demais.
+
+"""
+
 # - Termos mais frequentes por cluster
 """
-### Termos mais frequentes por cluster
+## Termos mais frequentes por cluster
 
-A seguir, apresentamos os termos mais frequentes em cada cluster de hinos, conforme identificado pelo algoritmo de clustering.
-Esses termos fornecem insights sobre os temas predominantes em cada grupo de hinos. 
-
+A seguir, apresentamos os primeiros 8 termos mais frequentes em cada cluster de hinos, conforme identificado pelo 
+algoritmo de clustering. Esses termos fornecem insights sobre os temas predominantes em cada grupo de hinos. 
 """
 
 
@@ -142,9 +151,9 @@ for c in sorted(hinos_analise["word_cluster"].unique()):
     cluster_tokens = hinos_analise.loc[
         hinos_analise["word_cluster"] == c, "tokens_no_stops"
     ].sum()
-    top_terms = [t for t, _ in Counter(cluster_tokens).most_common(10)]
+    top_terms = [t for t, _ in Counter(cluster_tokens).most_common(8)]
     top_hinos = (
-        hinos_analise.loc[hinos_analise["word_cluster"] == c, "nome"].head(3).tolist()
+        hinos_analise.loc[hinos_analise["word_cluster"] == c, "nome"].sample(3).tolist()
     )
 
     rows.append(
@@ -158,8 +167,48 @@ for c in sorted(hinos_analise["word_cluster"].unique()):
 df_clusters = pd.DataFrame(rows).set_index("Cluster")
 st.dataframe(df_clusters)
 
+
+"""
+É notável que algumas palavras-chave, como "Senhor", "Jesus" e "Deus", aparecem frequentemente em múltiplos clusters,
+indicando sua importância central nos temas dos hinos. Como vimos em análises anteriores, essas são as palavras
+mais comuns em todo o corpus de hinos.
+
+Interessantemente, os termos relativos ao cluster 9, que está isolado no espaço UMAP, não diferem muito dos termos 
+dos outros clusters. Isso sugere que, apesar da separação visual, os hinos desse grupo compartilham semelhanças temáticas
+com os demais.
+"""
+
+
+hinos_cluster9 = hinos_analise[hinos_analise["word_cluster"] == 9][
+    ["nome", "categoria_abr"]
+].rename_axis("Nº")
+f"""
+## Cluster 9 em perspectiva
+
+O cluster 9 é composto por um total de {hinos_cluster9.shape[0]} hinos. A seguir, são apresentados os hinos 
+pertencentes a este cluster, que se destaca por sua separação no espaço UMAP.
+
+"""
+
+st.dataframe(
+    hinos_cluster9, column_config={"nome": "Nome do Hino", "categoria_abr": "Categoria"}
+)
+
+"""
+Não há uma relação óbvia entre os hinos do cluster 9 em termos de categoria, sugerindo que a separação observada no espaço UMAP
+pode ser atribuída a outros fatores semânticos ou estilísticos presentes nos textos dos hinos.
+"""
+
+
 # - Tópicos comuns
-st.markdown("## Tópicos comuns entre os hinos")
+"""
+# Tópicos comuns entre os hinos
+
+Utilizando a técnica de Non-negative Matrix Factorization (NMF) aplicada à representação TF-IDF dos textos dos hinos,
+identificamos tópicos comuns presentes nos hinos. Usamos o número de clusters previamente definido como o número de 
+tópicos para garantir consistência na análise.
+A seguir, apresentamos os principais tópicos e suas palavras-chave associadas.
+"""
 
 
 n_topics = hinos_analise["word_cluster"].nunique()
@@ -182,25 +231,76 @@ nmf_topics = nmf.fit_transform(X_tfidf)
 
 
 def display_topics(model, feature_names, n_top_words=10):
+    rows = []
     for idx, topic in enumerate(model.components_):
-        st.markdown(f"\nTópico {idx+1}:")
         top_words = [feature_names[i] for i in topic.argsort()[: -n_top_words - 1 : -1]]
-        st.markdown(f"Palavras-chave: {' | '.join(top_words)}")
+        rows.append({"Tópico": f"{idx+1}", "Palavras-chave": ", ".join(top_words)})
+    df_topics = pd.DataFrame(rows).set_index("Tópico")
+    return df_topics
 
 
 feature_names = vectorizer.get_feature_names_out()
+df_topics = display_topics(nmf, feature_names)
+st.dataframe(df_topics)
 
-display_topics(nmf, feature_names)
-
+"""
+Diferentemente dos termos mais frequentes por cluster, os tópicos identificados pelo NMF consideram também bigramas e trigramas,
+o que pode revelar temas mais específicos e contextuais presentes nos hinos. Por exemplo, o tópico 3 está diretamente
+relacionado ao tema de "Volta de Jesus", enquanto que os tópicos 5 e 9 são de "Glória" e "Aleluia", respectivamente.
+Ainda, o tópico 6 contém termos relacionados ao clamor pelo sangue de Jesus, e o tópico 10 indica hinos de serviço e adoração.
+"""
 
 # - Distribuição de tópicos
-st.markdown("## Distribuição de Tópicos nos Hinos")
+"""
+## Distribuição de Tópicos nos Hinos
+
+Podemos usar os tópicos identificados para analisar a distribuição dos hinos no espaço UMAP, colorindo-os de acordo com o tópico
+dominante atribuído pelo NMF.
+"""
 
 fig = px.scatter(
     hinos_analise,
     x="word_umap1",
     y="word_umap2",
+    labels={"word_umap1": "", "word_umap2": "", "NMF_topic": "Tópico NMF"},
     color="NMF_topic",
     hover_data=["nome"],
+    width=600,
+    height=600,
 )
 st.plotly_chart(fig)
+
+"""
+Diferente dos claros agrupamentos observados com o clustering baseado em K-Means, a distribuição dos tópicos NMF no espaço UMAP
+é mais difusa. Isso sugere que os tópicos identificados pelo NMF capturam nuances semânticas que não se traduzem 
+diretamente em clusters distintos, indicando uma sobreposição maior entre os temas dos hinos.
+
+É possível observar algumas relações, no entanto. Por exemplo, os hinos do tópico 2 aparecem na mesma região do espaço UMAP
+associada ao cluster 6, e o tópico 7 está presente em uma área próxima ao cluster 5. Mas o que chama mais atenção, é que o
+tópico 4 está fortemente concentrado na região do cluster 9, sugerindo que os hinos desse tópico compartilham características
+semânticas distintas dos demais, e similares entre si.
+"""
+
+hinos_topico4 = hinos_analise[hinos_analise["NMF_topic"] == 4][
+    ["nome", "categoria_abr"]
+].rename_axis("Nº")
+
+f"""
+## Hinos do Tópico 4
+
+O tópico 4 é composto por um total de {hinos_topico4.shape[0]} hinos, mais do que o cluster 9 (que tem 
+{hinos_cluster9.shape[0]} hinos). A seguir, apresentamos os hinos pertencentes ao tópico 4.
+"""
+
+st.dataframe(
+    hinos_topico4, column_config={"nome": "Nome do Hino", "categoria_abr": "Categoria"}
+)
+
+# termos do cluster 9: glória, jesus, aleluia, sempre, senhor, deus, grande, vencendo
+# tópico 4: senhor, louvor, senhor senhor, voz, senhor deus, terra, nome, misericórdia, alma, diante
+"""
+Observa-se que os hinos do tópico 4 abrangem diversas categorias, sendo que as mais marcantes são sobre volta de Jesus
+e louvor. Me chamou a atenção o termo "vencendo" do cluster 9, e "terra" do tópico 4, como distintivos entre os demais grupos e 
+tópicos. Talvez esses termos expliquem a separação observada no espaço UMAP do cluster 9: hinos que enfatizam
+a vitória de Jesus e a abrangência de Seu reino na terra.
+"""

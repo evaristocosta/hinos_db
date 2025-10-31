@@ -7,15 +7,23 @@ from topsis_hamedbaziyad import TOPSIS
 
 #    TOPSIS (eda1_part6):
 
-st.markdown("# Seleção de similares ✅")
+st.title("Seleção de similares ✅")
 hinos_analise: pd.DataFrame = hinos_processados()
 similarity_word, similarity_sent = similarity_matrices()
+
+"""
+Nesta seção, utilizamos o método TOPSIS (Technique for Order of Preference by Similarity to Ideal Solution) para 
+selecionar hinos similares com base em múltiplos critérios, incluindo categorias, clusters e similaridades, calculados
+nas análises anteriores. O TOPSIS é uma técnica de tomada de decisão multi-critério que classifica as alternativas 
+com base na distância de uma solução ideal positiva e negativa. 
+
+"""
 
 
 # - Funcionamento
 # - Escolha do hino
 
-st.markdown("## Escolha um hino para ver sugestões similares")
+"""### 1. Escolha um hino para ver sugestões similares:"""
 hymn_num = st.number_input(
     "Número do hino",
     min_value=int(hinos_analise.index.min()),
@@ -64,7 +72,7 @@ hinos_restantes["sim_word"] = similarity_matrix_words_sample.values
 hinos_restantes["sim_sent"] = similarity_matrix_sent_sample.values
 
 # - Escolha dos pesos
-st.markdown("## Defina os pesos para cada critério")
+"""### 2. Defina os pesos para cada critério"""
 
 categories = [
     "categoria_id",
@@ -89,7 +97,8 @@ categories = [
 
 col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
 with col1:
-    st.markdown("**Categoria ID**")
+    st.badge("Categoria")
+
     categoria_id_weight = svs.vertical_slider(
         key="categoria_id",
         default_value=100,
@@ -97,47 +106,10 @@ with col1:
         min_value=0,
         max_value=100,
     )
+    st.caption("Considerando as categorias da coletânea de hinos.")
+
 with col2:
-    st.markdown("**Word Cluster**")
-    word_cluster_weight = svs.vertical_slider(
-        key="word_cluster",
-        default_value=90,
-        step=1,
-        min_value=0,
-        max_value=100,
-    )
-
-with col3:
-    st.markdown("**NMF Topic**")
-    NMF_topic_weight = svs.vertical_slider(
-        key="NMF_topic",
-        default_value=80,
-        step=1,
-        min_value=0,
-        max_value=100,
-    )
-with col4:
-    st.markdown("**Sent Cluster**")
-    sent_cluster_weight = svs.vertical_slider(
-        key="sent_cluster",
-        default_value=70,
-        step=1,
-        min_value=0,
-        max_value=100,
-    )
-
-with col5:
-    st.markdown("**BERT Topic**")
-    BERT_topic_weight = svs.vertical_slider(
-        key="BERT_topic",
-        default_value=60,
-        step=1,
-        min_value=0,
-        max_value=100,
-    )
-
-with col6:
-    st.markdown("**Similaridade Word Embeddings**")
+    st.badge("Similaridade (palavras)", color="orange")
     sim_word_weight = svs.vertical_slider(
         key="sim_word",
         default_value=50,
@@ -145,9 +117,34 @@ with col6:
         min_value=0,
         max_value=100,
     )
+    st.caption(
+        "Considerando a similaridade entre os hinos com base em Word Embeddings."
+    )
 
-with col7:
-    st.markdown("**Similaridade Sentence Embeddings**")
+with col3:
+    st.badge("Cluster (palavras)", color="orange")
+    word_cluster_weight = svs.vertical_slider(
+        key="word_cluster",
+        default_value=90,
+        step=1,
+        min_value=0,
+        max_value=100,
+    )
+    st.caption("Considerando os clusters de palavras dos hinos.")
+
+with col4:
+    st.badge("Tópico NMF", color="orange")
+    NMF_topic_weight = svs.vertical_slider(
+        key="NMF_topic",
+        default_value=80,
+        step=1,
+        min_value=0,
+        max_value=100,
+    )
+    st.caption("Considerando os tópicos NMF dos hinos.")
+
+with col5:
+    st.badge("Similaridade (sentenças)", color="green")
     sim_sent_weight = svs.vertical_slider(
         key="sim_sent",
         default_value=40,
@@ -155,6 +152,32 @@ with col7:
         min_value=0,
         max_value=100,
     )
+    st.caption(
+        "Considerando a similaridade entre os hinos com base em Sentence Embeddings."
+    )
+
+with col6:
+    st.badge("Cluster (sentenças)", color="green")
+    sent_cluster_weight = svs.vertical_slider(
+        key="sent_cluster",
+        default_value=70,
+        step=1,
+        min_value=0,
+        max_value=100,
+    )
+    st.caption("Considerando os clusters de sentenças dos hinos.")
+
+with col7:
+    st.badge("Tópico BERT", color="green")
+    BERT_topic_weight = svs.vertical_slider(
+        key="BERT_topic",
+        default_value=60,
+        step=1,
+        min_value=0,
+        max_value=100,
+    )
+    st.caption("Considerando os tópicos BERT dos hinos.")
+
 
 weights = [
     categoria_id_weight,
@@ -165,16 +188,56 @@ weights = [
     sim_word_weight,
     sim_sent_weight,
 ]
-weights = [w / sum(weights) for w in weights]
+
+# - Resultados
+"""
+# Resultados da seleção TOPSIS
+
+"""
+
+# Valida se os sliders já retornaram valores (não são None)
+if any(w is None for w in weights):
+    st.warning(
+        "Aguarde a inicialização dos sliders ou ajuste-os para prosseguir com a seleção TOPSIS."
+    )
+    st.stop()
+
+# Evita divisão por zero: exige soma > 0
+sum_w = sum(weights)
+if sum_w == 0:
+    st.warning(
+        "A soma dos pesos é zero. Ajuste pelo menos um peso para um valor maior que zero."
+    )
+    st.stop()
+
+# Normaliza os pesos
+weights = [w / sum_w for w in weights]
+if sum(weights) != 1:
+    st.warning(
+        "Aguarde a inicialização dos sliders ou ajuste-os para prosseguir com a seleção TOPSIS."
+    )
+    st.stop()
+
 profit_cost = [1, 1, 1, 1, 1, 1, 1]
 
 
-# - Resultados
-st.markdown("## Resultados da seleção TOPSIS")
+# executa TOPSIS apenas após validações
+# valida e prepara a matriz de critérios para evitar None dentro da função TOPSIS
+X = hinos_restantes[categories].copy()
+# força tipos numéricos; se houver valores não-convertíveis vira NaN -> substitui por 0
+X = X.apply(pd.to_numeric, errors="coerce").fillna(0)
 
-# BUG: tenta calcular antes dos sliders serem inicializados
+# valida consistência de dimensões com os vetores de peso e profit_cost
+if X.shape[1] != len(weights) or X.shape[1] != len(profit_cost):
+    print("nem entrou")
+    st.error(
+        f"Número de critérios ({X.shape[1]}) diferente do tamanho de weights ({len(weights)}) "
+        f"ou profit_cost ({len(profit_cost)}). Ajuste antes de prosseguir."
+    )
+    st.stop()
+
 output = TOPSIS(
-    hinos_restantes[categories],
+    X,
     weights,
     profit_cost,
 )
@@ -184,17 +247,16 @@ hinos_restantes = pd.concat([hinos_restantes, scores], axis=1).sort_values(
     by="topsis_score", ascending=False
 )
 
-st.markdown(
-    "Sugestões para o hino: " + str(hino_sample.name) + " - " + str(hino_sample["nome"])
-)
+st.markdown(f"Sugestões para o hino: **{hino_sample.name} - {hino_sample['nome']}**")
 st.dataframe(
-    hinos_restantes[["nome", "topsis_score", "texto_limpo"]].head(10),
+    hinos_restantes[["nome", "topsis_score"]].head(10).rename_axis("Nº"),
     width="stretch",
     column_config={
-        "nome": st.column_config.TextColumn("Nome", width="small", max_chars=25),
-        "texto_limpo": st.column_config.TextColumn("Texto", width="medium"),
+        "nome": st.column_config.TextColumn("Nome"),
+        # "texto_limpo": st.column_config.TextColumn("Texto", width="medium"),
         "topsis_score": st.column_config.NumberColumn(
-            "TOPSIS Score", format="%.2f", width=20
+            "TOPSIS Score",
+            format="%.2f",
         ),
     },
 )

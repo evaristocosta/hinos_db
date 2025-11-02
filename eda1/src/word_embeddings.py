@@ -50,6 +50,7 @@ fig = px.imshow(
     labels=dict(x="Hinos", y="Hinos", color="Similaridade"),
     width=600,
     height=600,
+    color_continuous_scale="Viridis",
 )
 st.plotly_chart(fig)
 
@@ -66,7 +67,7 @@ palavras diferentes, eles compartilham um significado semântico semelhante, rel
 
 # - Hinos mais semelhantes
 """
-# Hinos mais semelhantes
+## Hinos mais semelhantes
 
 A seguir, selecione um hino para ver os mais semelhantes com base nos embeddings de palavras.
 """
@@ -109,8 +110,10 @@ onde cores diferentes representam clusters distintos.
 Cada ponto representa um hino, e a proximidade entre os pontos indica similaridade semântica. Clusters próximos
 sugerem temas ou estilos comuns entre os hinos agrupados. 
 
-A definição dos clusters foi baseada na análise de silhueta, resultando em 10 clusters que capturam bem as variações 
-nos temas dos hinos. 
+A definição do número de clusters foi baseada na análise de silhueta, resultando em 10 clusters que capturam bem as 
+variações nos temas dos hinos -- embora o melhor valor de silhueta tenha sido encontrado para 2 clusters, decidi 
+manter 10 clusters para uma representação mais granular e próxima da quantidade de categorias originais que existem
+na coleção de hinos.
 
 """
 
@@ -152,10 +155,9 @@ for c in sorted(hinos_analise["word_cluster"].unique()):
         hinos_analise["word_cluster"] == c, "tokens_no_stops"
     ].sum()
     top_terms = [t for t, _ in Counter(cluster_tokens).most_common(8)]
-    top_hinos = (
-        hinos_analise.loc[hinos_analise["word_cluster"] == c, "nome"].sample(3).tolist()
-    )
-
+    cluster_series = hinos_analise.loc[hinos_analise["word_cluster"] == c, "nome"]
+    sampled = cluster_series.sample(n=min(3, len(cluster_series)), random_state=42)
+    top_hinos = [f"{int(idx)} - {name}" for idx, name in sampled.items()]
     rows.append(
         {
             "Cluster": str(c),
@@ -198,6 +200,93 @@ st.dataframe(
 Não há uma relação óbvia entre os hinos do cluster 9 em termos de categoria, sugerindo que a separação observada no espaço UMAP
 pode ser atribuída a outros fatores semânticos ou estilísticos presentes nos textos dos hinos.
 """
+
+
+# ## Relação entre Clusters e Categorias da Coletânea
+st.subheader("Relação entre Clusters e Categorias da Coletânea")
+
+# tabela de contingência: categorias x clusters
+ct = pd.crosstab(
+    hinos_analise["categoria_abr"], hinos_analise["word_cluster"]
+).sort_index()
+
+# Heatmap (proporções por categoria) com anotações dentro dos quadrados
+ct_counts = ct.copy()
+ct_prop = ct_counts.div(
+    ct_counts.sum(axis=1), axis=0
+)  # normaliza por categoria (linha)
+ct_prop_pct = ct_prop * 100  # em porcentagem
+
+x = ct.index.tolist()  # categorias
+y = [str(c) for c in ct.columns]  # clusters (string para rótulos)
+
+fig_ct = px.imshow(
+    ct_prop_pct.T.values,
+    x=x,
+    y=y,
+    labels={
+        "x": "Categoria da Coletânea",
+        "y": "Cluster (word_cluster)",
+        "color": "Proporção (%)",
+    },
+    color_continuous_scale="Viridis",
+    width=800,
+    height=420,
+)
+
+# adicionar anotações com porcentagem e contagem
+z = ct_prop_pct.T.values
+counts = ct_counts.T.values
+z_max = z.max() if z.size else 0
+for i_y, y_label in enumerate(y):
+    for i_x, x_label in enumerate(x):
+        val_pct = z[i_y, i_x]
+        cnt = int(counts[i_y, i_x])
+        text = f"{val_pct:.1f}%\n({cnt})"
+        # escolha de cor do texto para legibilidade
+        text_color = "white" if val_pct > (z_max / 2 if z_max > 0 else 0.5) else "black"
+        fig_ct.add_annotation(
+            x=x_label,
+            y=y_label,
+            text=text,
+            showarrow=False,
+            font=dict(color=text_color, size=11),
+            xanchor="center",
+            yanchor="middle",
+        )
+
+fig_ct.update_layout(margin=dict(l=40, r=40, t=40, b=40))
+st.plotly_chart(fig_ct)
+
+# Stacked bar (proporção por categoria) — mostra composição de clusters dentro de cada categoria
+# index_name = ct.index.name or "categoria_abr"
+# ct_pct = (
+#     ct.div(ct.sum(axis=1), axis=0)
+#     .reset_index()
+#     .melt(id_vars=index_name, var_name="Cluster", value_name="Proporção")
+# )
+# fig_bar = px.bar(
+#     ct_pct,
+#     x=index_name,
+#     y="Proporção",
+#     color="Cluster",
+#     barmode="stack",
+#     labels={
+#         index_name: "Categoria da Coletânea",
+#         "Proporção": "Proporção por Categoria",
+#     },
+#     width=800,
+#     height=420,
+# )
+# fig_bar.update_layout(xaxis={"categoryorder": "array", "categoryarray": ct.index})
+# st.plotly_chart(fig_bar)
+
+# # Mostrar tabelas auxiliares (contagens e proporções)
+# st.markdown("Contagens (Categoria × Cluster)")
+# st.dataframe(ct)
+
+# st.markdown("Proporções por Categoria (normalizado por categoria)")
+# st.dataframe(ct.div(ct.sum(axis=1), axis=0).round(3))
 
 
 # - Tópicos comuns

@@ -12,7 +12,7 @@ from pathlib import Path
 def hinos_processados() -> pd.DataFrame:
     # hinos = load_data()
     # hinos = preprocessing(hinos)
-    pkl_path = Path(__file__).parent.parent / "assets" / "hinos_analise_com_emocoes.pkl"
+    pkl_path = Path(__file__).parent.parent / "assets" / "hinos_analise_emocoes.pkl"
     # pkl_path = (
     #     Path(__file__).parent.parent / "assets" / "hinos_analise_word_embeddings.pkl"
     # )

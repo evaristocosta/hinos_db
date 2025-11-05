@@ -202,8 +202,14 @@ pode ser atribuída a outros fatores semânticos ou estilísticos presentes nos 
 """
 
 
-# ## Relação entre Clusters e Categorias da Coletânea
-st.subheader("Relação entre Clusters e Categorias da Coletânea")
+""" 
+## Relação entre Clusters e Categorias da Coletânea
+
+
+Analisamos a distribuição dos clusters de hinos em relação às categorias originais da coletânea. Isso nos ajuda a entender como os 
+agrupamentos baseados em embeddings de palavras correspondem às categorias pré-definidas. A seguir, apresentamos uma visualização 
+que mostra a proporção de hinos de cada categoria dentro de cada cluster.
+"""
 
 # tabela de contingência: categorias x clusters
 ct = pd.crosstab(
@@ -258,35 +264,14 @@ for i_y, y_label in enumerate(y):
 fig_ct.update_layout(margin=dict(l=40, r=40, t=40, b=40))
 st.plotly_chart(fig_ct)
 
-# Stacked bar (proporção por categoria) — mostra composição de clusters dentro de cada categoria
-# index_name = ct.index.name or "categoria_abr"
-# ct_pct = (
-#     ct.div(ct.sum(axis=1), axis=0)
-#     .reset_index()
-#     .melt(id_vars=index_name, var_name="Cluster", value_name="Proporção")
-# )
-# fig_bar = px.bar(
-#     ct_pct,
-#     x=index_name,
-#     y="Proporção",
-#     color="Cluster",
-#     barmode="stack",
-#     labels={
-#         index_name: "Categoria da Coletânea",
-#         "Proporção": "Proporção por Categoria",
-#     },
-#     width=800,
-#     height=420,
-# )
-# fig_bar.update_layout(xaxis={"categoryorder": "array", "categoryarray": ct.index})
-# st.plotly_chart(fig_bar)
 
-# # Mostrar tabelas auxiliares (contagens e proporções)
-# st.markdown("Contagens (Categoria × Cluster)")
-# st.dataframe(ct)
-
-# st.markdown("Proporções por Categoria (normalizado por categoria)")
-# st.dataframe(ct.div(ct.sum(axis=1), axis=0).round(3))
+"""
+Podemos observar que alguns clusters têm alguma associação com categorias específicas da coletânea. Por exemplo, o cluster 1 tem uma forte presença 
+de hinos da categoria "CLAMOR", enquanto o cluster 4 é dominado por hinos da categoria "SALMOS DE LOUVOR". No entanto, muitos clusters apresentam 
+uma distribuição mais diversificada de categorias, indicando que os agrupamentos baseados em embeddings de palavras não correspondem diretamente às 
+categorias pré-definidas. Isso sugere que os embeddings capturam nuances semânticas que transcendem as categorias tradicionais, refletindo a 
+complexidade dos temas abordados nos hinos.
+"""
 
 
 # - Tópicos comuns

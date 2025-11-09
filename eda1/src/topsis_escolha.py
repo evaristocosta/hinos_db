@@ -9,7 +9,7 @@ from topsis_hamedbaziyad import TOPSIS
 
 st.title("Seleção de similares ✅")
 hinos_analise: pd.DataFrame = hinos_processados()
-similarity_word, similarity_sent = similarity_matrices()
+similarity_word, similarity_sent, similarity_emocoes = similarity_matrices()
 
 """
 Nesta seção, utilizamos o método TOPSIS (Technique for Order of Preference by Similarity to Ideal Solution) para 
@@ -68,8 +68,12 @@ similarity_matrix_words_sample = similarity_word.loc[
 similarity_matrix_sent_sample = similarity_sent.loc[
     hino_sample.name, hinos_restantes.index
 ]
+similarity_matrix_emocoes_sample = similarity_emocoes.loc[
+    hino_sample.name, hinos_restantes.index
+]
 hinos_restantes["sim_word"] = similarity_matrix_words_sample.values
 hinos_restantes["sim_sent"] = similarity_matrix_sent_sample.values
+hinos_restantes["sim_emocao"] = similarity_matrix_emocoes_sample.values
 
 # - Escolha dos pesos
 """### 2. Defina os pesos para cada critério"""
@@ -82,6 +86,7 @@ categories = [
     "BERT_topic",
     "sim_word",
     "sim_sent",
+    "sim_emocao",
 ]
 
 
@@ -93,9 +98,10 @@ categories = [
     BERT_topic_weight,
     sim_word_weight,
     sim_sent_weight,
-) = (0, 0, 0, 0, 0, 0, 0)
+    sim_emocao_weight,
+) = (0, 0, 0, 0, 0, 0, 0, 0)
 
-col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
 with col1:
     st.badge("Categoria")
 
@@ -178,6 +184,18 @@ with col7:
     )
     st.caption("Considerando os tópicos BERT dos hinos.")
 
+with col8:
+    st.badge("Similaridade (emoções)", color="red")
+    sim_emocao_weight = svs.vertical_slider(
+        key="sim_emocao",
+        default_value=30,
+        step=1,
+        min_value=0,
+        max_value=100,
+    )
+    st.caption(
+        "Considerando a similaridade entre os hinos com base na análise de emoções."
+    )
 
 weights = [
     categoria_id_weight,
@@ -187,6 +205,7 @@ weights = [
     BERT_topic_weight,
     sim_word_weight,
     sim_sent_weight,
+    sim_emocao_weight,
 ]
 
 # - Resultados
@@ -218,7 +237,7 @@ if sum(weights) != 1:
     )
     st.stop()
 
-profit_cost = [1, 1, 1, 1, 1, 1, 1]
+profit_cost = [1, 1, 1, 1, 1, 1, 1, 1]
 
 
 # executa TOPSIS apenas após validações
@@ -249,7 +268,7 @@ hinos_restantes = pd.concat([hinos_restantes, scores], axis=1).sort_values(
 
 st.markdown(f"Sugestões para o hino: **{hino_sample.name} - {hino_sample['nome']}**")
 st.dataframe(
-    hinos_restantes[["nome", "topsis_score"]].head(10).rename_axis("Nº"),
+    hinos_restantes[["nome", "topsis_score"]].head(20).rename_axis("Nº"),
     width="stretch",
     column_config={
         "nome": st.column_config.TextColumn("Nome"),
@@ -259,4 +278,5 @@ st.dataframe(
             format="%.2f",
         ),
     },
+    height=500,
 )

@@ -13,9 +13,6 @@ def hinos_processados() -> pd.DataFrame:
     # hinos = load_data()
     # hinos = preprocessing(hinos)
     pkl_path = Path(__file__).parent.parent / "assets" / "hinos_analise_emocoes.pkl"
-    # pkl_path = (
-    #     Path(__file__).parent.parent / "assets" / "hinos_analise_word_embeddings.pkl"
-    # )
     hinos_processados = pd.read_pickle(pkl_path)
 
     return hinos_processados
@@ -48,21 +45,6 @@ def load_data() -> pd.DataFrame:
     return hinos_analise
 
 
-""" def preprocessing(hinos: pd.DataFrame) -> pd.DataFrame:
-    hinos_analise = hinos.copy()
-    hinos_analise.loc[hinos_analise["numero"] == "null", "numero"] = 0
-    hinos_analise["numero_int"] = hinos_analise["numero"].astype(int)
-    hinos_analise = hinos_analise.drop(columns=["numero"]).rename(
-        columns={"numero_int": "numero"}
-    )
-    hinos_analise["categoria_abr"] = hinos_analise["categoria"].apply(
-        lambda x: x[:13] + "..." if len(x) > 15 else x
-    )
-
-    return hinos_analise.sort_values("numero")
-"""
-
-
 @st.cache_data
 def similarity_matrices():
     similarity_word = pd.read_pickle(
@@ -75,4 +57,9 @@ def similarity_matrices():
         / "assets"
         / "similarity_matrix_sentence_embeddings.pkl"
     )
-    return similarity_word, similarity_sent
+    similarity_emocoes = pd.read_pickle(
+        Path(__file__).parent.parent
+        / "assets"
+        / "similarity_matrix_emocoes.pkl"
+    )
+    return similarity_word, similarity_sent, similarity_emocoes

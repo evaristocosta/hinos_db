@@ -54,10 +54,10 @@ word_embeddings = st.Page(
 )
 # Frases todas como embeddings (eda1_part5)
 sent_embeddings = st.Page("sent_embeddings.py", title="Embeddings de frases", icon="🗒️")
-# Seleção de similares usando TOPSIS (eda1_part6)
-topsis_escolha = st.Page("topsis_escolha.py", title="Seleção de similares", icon="✅")
-# Análise de emoções (eda1_part7)
+# Análise de emoções (eda1_part6)
 emocoes = st.Page("emocoes.py", title="Análise de emoções", icon="🎭")
+# Seleção de similares usando TOPSIS (eda1_part7)
+topsis_escolha = st.Page("topsis_escolha.py", title="Seleção de similares", icon="✅")
 
 # Set up navigation
 pg = st.navigation(
@@ -70,8 +70,8 @@ pg = st.navigation(
         analise_palavras,
         word_embeddings,
         sent_embeddings,
-        topsis_escolha,
         emocoes,
+        topsis_escolha,
     ]
 )
 

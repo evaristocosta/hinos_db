@@ -36,7 +36,7 @@ st.markdown(
 
 
 # Define the pages
-main = st.Page("main.py", title="Início - Estatísticas dos Hinos", icon="🏠")
+main = st.Page("main.py", title="Início - Hinos em Dados", icon="🏠")
 
 # Tabela geral pra observação dos dados
 tabela = st.Page("tabela.py", title="Tabela exploratória", icon="📆")

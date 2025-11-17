@@ -1,12 +1,60 @@
 import streamlit as st
 
-st.title("Estatísticas de Hinos")
+st.title("Hinos em Dados")
 """
-Seja bem-vindo a página de estatísticas de hinos!
+Seja bem-vindo ao **Hinos em Dados**! 🎵
 
-Aqui você pode explorar diversas informações sobre os hinos da Coletânea de Hinos da Igreja Cristã Maranata 
-(desconsiderando os hinos de Crianças, Intermediários e Adolescentes -- CIAs).
+Aqui você pode explorar diversas informações e análises estatísticas sobre os hinos da Coletânea de 
+Hinos da Igreja Cristã Maranata, desconsiderando os hinos de Crianças, Intermediários e Adolescentes (CIAs).
 
-Utilize o menu lateral para navegar entre as diferentes análises disponíveis.
+## 📊 Objetivo do Projeto
+
+Este projeto tem como propósito realizar uma **Análise Exploratória de Dados (EDA)** da 
+Coletânea, utilizando técnicas de Ciência de Dados e Processamento de Linguagem Natural (NLP) para:
+
+- **Compreender padrões** nos títulos e letras dos hinos
+- **Identificar categorias temáticas** e características dos louvores
+- **Analisar emoções** presentes nas letras
+- **Explorar similaridades** entre os hinos usando embeddings
+- **Fornecer insights** sobre a riqueza do conteúdo da coletânea
+
+## 🛠️ Desenvolvimento
+
+Todo o código-fonte e os notebooks Jupyter utilizados no desenvolvimento estão disponíveis no 
+**GitHub** no repositório [evaristocosta/hinos_db](https://github.com/evaristocosta/hinos_db). 
+Os notebooks de análise encontram-se na pasta `eda1/notebooks/`, onde você pode acompanhar 
+passo a passo todo o processo de exploração e análise dos dados.
+
+## 📋 Sumário
+
+Utilize o menu lateral para navegar entre as diferentes análises disponíveis:
+
+- **📆 Tabela Exploratória**: Visualize todos os hinos em formato de tabela, com informações como título, categoria, número de palavras e muito mais.
+
+- **📑 Categorias dos Louvores**: Explore a distribuição dos hinos por categorias temáticas e entenda como estão organizados.
+
+- **🔢 Tamanho dos Títulos**: Analise estatísticas sobre o comprimento e características dos títulos dos hinos.
+
+- **🔡 Exploração de Palavras**: Descubra as palavras mais frequentes e padrões de vocabulário nas letras dos hinos.
+
+- **✒️ Análise de Palavras**: Aprofunde-se na análise de palavras específicas e suas ocorrências ao longo da coletânea.
+
+- **📝 Embeddings de Palavras**: Explore representações vetoriais de palavras e visualize similaridades semânticas.
+
+- **🗒️ Embeddings de Frases**: Veja como frases completas dos hinos se relacionam semanticamente no espaço vetorial.
+
+- **🎭 Análise de Emoções**: Descubra as emoções predominantes nas letras dos hinos através de análise de sentimentos.
+
+- **✅ Seleção de Similares**: Use o método TOPSIS para encontrar hinos similares baseado em múltiplos critérios.
+
+## 👨‍💻 Contato
+
+Este projeto foi desenvolvido por **Lucas Piccioni Costa**.
+
+- 📧 Email: [lucascosta74@gmail.com](mailto:lucascosta74@gmail.com)
+- 📸 Instagram: [lucas.costa74](https://www.instagram.com/lucas.costa74/)
+- 💼 LinkedIn: [lucascosta74](https://www.linkedin.com/in/lucascosta74/)
+- 🐙 GitHub: [evaristocosta](https://github.com/evaristocosta)
+
 
 """

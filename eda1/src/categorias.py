@@ -39,7 +39,7 @@ if not categorias_count.empty:
 else:
     categorias_count["bar_type"] = []
 
-st.title("Categoria dos louvores 📑")
+st.title("📑 Categoria dos louvores")
 
 """
 Nesta seção, exploramos a distribuição de hinos por categoria da coletânea.
@@ -87,7 +87,7 @@ chart = (
             "bar_type:N",
             scale=alt.Scale(
                 domain=["Maior", "Menor", "Outro"],
-                range=["#a715c1", "#d7800d", "#4c78a8"],
+                range=["#818d3f", "#d7a04f", "#6181a8"],
             ),
             legend=None,
         ),

@@ -41,7 +41,7 @@ if categorias_selecionadas:
     ]
 
 
-st.title("Tabela de louvores 📆")
+st.title("📆 Tabela de louvores")
 
 """
 A tabela a seguir representa a base de dados de hinos utilizada para as análises presentes neste projeto. Ela também

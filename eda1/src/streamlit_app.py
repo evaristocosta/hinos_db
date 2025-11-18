@@ -7,28 +7,40 @@ st.markdown(
     """
     <style>
         /* Corpo geral */
+        /*
         .main {
             background-color: #ffffff;
             font-family: 'Times New Roman', 'Georgia', serif;
             color: #1c1c1c;
             line-height: 1.6;
         }
+        */
         /* Títulos */
+        /*
         h1, h2, h3 {
             color: #2E5A87;
             font-weight: 600;
         }
+        */
         /* Cards e caixas */
         .stMarkdown, .stDataFrame, .stPlotlyChart {
-            border-radius: 8px;
-            background-color: #f7f9fb;
-            padding: 10px 15px;
-            box-shadow: 0 0 4px rgba(0,0,0,0.05);
+            //border-radius: 8px;
+            //background-color: #f7f9fb;
+            //padding: 10px 15px;
+            //box-shadow: 0 0 4px rgba(0,0,0,0.05);
         }
         /* Sidebar */
+        /*
         section[data-testid="stSidebar"] {
-            background-color: #f0f3f7;
+            background-color: #f4f8e2;
         }
+        section[data-testid="stSidebarNavLink"] {
+            background-color: #abbf53;
+        }
+        section[data-testid="stSidebarNavLink"]:hover {
+            background-color: #a3b350;
+        }
+        */
     </style>
 """,
     unsafe_allow_html=True,

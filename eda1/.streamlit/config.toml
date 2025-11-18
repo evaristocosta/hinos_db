@@ -1,7 +1,17 @@
 [theme]
-primaryColor = "#2E5A87"           # azul escuro científico
-backgroundColor = "#FFFFFF"        # fundo branco puro
-secondaryBackgroundColor = "#F4F6F9" # cinza muito claro
-textColor = "#1C1C1C"              # texto quase preto
-font = "sans-serif"      # Main body text uses a sans-serif font
-headingFont = "serif"    # All headings/titles use a serif font
+base="light"
+primaryColor = "#818d3f"           
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#abbf5340"
+textColor = "#1C1C1C"
+font = "sans-serif"
+headingFont = "serif"
+linkColor = "#4f5926"
+dataframeHeaderBackgroundColor = "#f4f8e2"
+
+[theme.sidebar]
+borderColor = "#212510"
+primaryColor = "#818d3f"
+backgroundColor = "#f4f8e2"
+secondaryBackgroundColor="#f4f8e2"
+showWidgetBorder=true

@@ -1,8 +1,8 @@
 import streamlit as st
 
-st.title("Hinos em Dados")
+st.title("🎵 Hinos em Dados")
 """
-Seja bem-vindo ao **Hinos em Dados**! 🎵
+Seja bem-vindo ao **Hinos em Dados**!
 
 Aqui você pode explorar diversas informações e análises estatísticas sobre os hinos da Coletânea de 
 Hinos da Igreja Cristã Maranata, desconsiderando os hinos de Crianças, Intermediários e Adolescentes (CIAs).

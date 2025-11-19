@@ -34,7 +34,7 @@ passo a passo todo o processo de exploração e análise dos dados.
 
 Utilize o menu lateral para navegar entre as diferentes análises disponíveis:
 """
-st.badge("**Importante**: As análises estão em ordem de complexidade crescente.", icon="ℹ️")
+st.info("**Importante**: As análises estão em ordem de complexidade crescente.", icon="ℹ️")
 """
 - **📆 Tabela Exploratória**: Visualize todos os hinos em formato de tabela, com informações como título, categoria, número de palavras e muito mais.
 

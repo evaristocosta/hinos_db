@@ -45,8 +45,26 @@ mais altos indicam maior similaridade semântica.
 
 """
 
+st.warning("Aplicar filtros pode causar problemas na visualização da matriz de similaridade." , icon="⚠️")
+
+# filtrar a matriz de similaridade para mostrar apenas os hinos presentes em hinos_analise
+selected_idx = list(hinos_analise.index)
+
+# se similarity_word for DataFrame, usamos .loc; caso seja ndarray, convertemos para DataFrame com índices posicionais
+if hasattr(similarity_word, "loc"):
+    sim_filtered = similarity_word.loc[selected_idx, selected_idx]
+else:
+    sim_df = pd.DataFrame(
+        similarity_word,
+        index=range(similarity_word.shape[0]),
+        columns=range(similarity_word.shape[0]),
+    )
+    sim_filtered = sim_df.loc[selected_idx, selected_idx]
+
 fig = px.imshow(
-    similarity_word,
+    sim_filtered,
+    x=sim_filtered.columns.astype(str),
+    y=sim_filtered.index.astype(str),
     labels=dict(x="Hinos", y="Hinos", color="Similaridade"),
     width=600,
     height=600,

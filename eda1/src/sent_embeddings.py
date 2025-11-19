@@ -7,7 +7,7 @@ from collections import Counter
 import numpy as np
 
 #    Sequence embeddings (eda1_part5):
-st.title("Embeddings de frases 🗒️")
+st.title("🗒️ Embeddings de frases")
 """
 Nesta seção, exploramos os embeddings de frases gerados a partir dos hinos. Os embeddings são representações 
 vetoriais que capturam o significado semântico de frases inteiras ao invés de palavras isoladas, permitindo 
@@ -36,7 +36,7 @@ if categorias_selecionadas:
 # similaridade = cosine_similarity
 
 """
-# Matriz de Similaridade entre Hinos
+## Matriz de Similaridade entre Hinos
 
 Como na análise de embeddings de palavras, aqui apresentamos a matriz de similaridade entre os hinos,
 mas agora utilizando os embeddings de frases. 
@@ -50,12 +50,20 @@ e não apenas de palavras individuais -- processo de tokenização e remoção d
 
 """
 
+st.warning("Aplicar filtros pode causar problemas na visualização da matriz de similaridade." , icon="⚠️")
+
+# restringe a matriz de similaridade aos hinos atualmente no dataframe (caso haja filtro)
+idx = hinos_analise.index.tolist()
+sim_sub = similarity_sentence.loc[idx, idx]
+
 fig = px.imshow(
-    similarity_sentence,
+    sim_sub,
     labels=dict(x="Hinos", y="Hinos", color="Similaridade"),
+    x=sim_sub.columns,
+    y=sim_sub.index,
     width=600,
     height=600,
-    color_continuous_scale="Viridis",
+    color_continuous_scale="Cividis",
 )
 st.plotly_chart(fig)
 
@@ -80,7 +88,7 @@ na geração dos embeddings e na similaridade calculada.
 
 
 """
-## Relação de tamanho do hino e similaridade
+### Relação de tamanho do hino e similaridade
 
 Aqui, investigamos se existe alguma correlação entre o tamanho dos hinos (medido pelo número de tokens)
 e a similaridade média com os demais hinos, utilizando os embeddings de frases.
@@ -139,10 +147,8 @@ fig = px.scatter(
     title="Relação entre tamanho do hino e similaridade média",
     width=700,
     height=450,
+    color_discrete_sequence=["#6181a8"]
 )
-
-
-
 st.plotly_chart(fig)
 
 
@@ -164,44 +170,51 @@ com os demais hinos, embora existam exceções individuais.
 
 
 """
-## Hinos mais semelhantes
+### Hinos mais semelhantes
 
 Usando os dados de similaridade, a seguir você pode selecionar um hino para ver os mais semelhantes com base 
 nos embeddings de sentenças.
 """
 
-col1, col2 = st.columns(2)
-with col1:
-    hymn_num = st.number_input(
-        "Selecione o número do hino:",
-        min_value=int(hinos_analise.index.min()),
-        max_value=int(hinos_analise.index.max()),
-        value=495,  # um bom exemplo pra iniciar
-    )
-
-similarities = list(enumerate(similarity_sentence.iloc[hymn_num]))
-similarities = sorted(similarities, key=lambda x: x[1], reverse=True)
-
-with col2:
-    st.markdown(f"**🎵 Hino {hymn_num} - {hinos_analise['nome'].iloc[hymn_num]}**")
-
-results = [
-    (idx, hinos_analise["nome"].iloc[idx], score) for idx, score in similarities[1:11]
+hinos_opcoes = [
+    f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()
 ]
-df_sim = (
-    pd.DataFrame(results, columns=["hino", "nome", "similaridade"])
-    .set_index("hino")
-    .rename_axis("Nº")
-)
-df_sim["similaridade"] = df_sim["similaridade"].round(3)
-st.dataframe(
-    df_sim,
-    column_config={"nome": "Nome", "similaridade": "Similaridade"},
+hino_selecionado = st.selectbox(
+    "Pesquisar hino (número ou nome)",
+    options=hinos_opcoes,
+    placeholder="Digite para buscar...",
+    index=None,
+    help="Digite o número ou parte do nome do hino para pesquisar",
 )
 
+if hino_selecionado:
+    hymn_num = int(hino_selecionado.split(" - ")[0])
+    hymn_name = hinos_analise.loc[hymn_num, "nome"]
+
+    st.metric(label="🎵 Hino", value=f"{hymn_num} — {hymn_name}")
+
+    similarities = list(enumerate(similarity_sentence.iloc[hymn_num]))
+    similarities = sorted(similarities, key=lambda x: x[1], reverse=True)
+
+
+    results = [
+        (idx, hinos_analise["nome"].iloc[idx], score) for idx, score in similarities[1:11]
+    ]
+    df_sim = (
+        pd.DataFrame(results, columns=["hino", "nome", "similaridade"])
+        .set_index("hino")
+        .rename_axis("Nº")
+    )
+    df_sim["similaridade"] = df_sim["similaridade"].round(3)
+    st.dataframe(
+        df_sim,
+        column_config={"nome": "Nome", "similaridade": "Similaridade"},
+    )
+else:
+    st.info("Selecione um hino para ver os mais semelhantes.")
 
 """
-# Clustering de Hinos com Embeddings de Sentenças
+## Clustering de Hinos com Embeddings de Sentenças
 
 Assim como na análise de embeddings de palavras, aplicamos técnicas de redução de dimensionalidade (UMAP)
 e clustering (K-Means) para visualizar e agrupar os hinos com base em seus embeddings de frases. Levando em conta
@@ -229,7 +242,7 @@ entre os hinos, permitindo uma formação de clusters mais definida.
 
 
 """
-## Termos mais frequentes por cluster
+### Termos mais frequentes por cluster
 
 Aqui, apresentamos os termos mais frequentes em cada cluster de hinos baseado nos embeddings de frases, bem como hinos
 representativos de cada cluster. 
@@ -268,7 +281,7 @@ hinos da categoria de "CLAMOR".
 
 
 """
-## Relação entre Clusters e Categorias da Coletânea
+### Relação entre Clusters e Categorias da Coletânea
 
 Como anteriormente, usando embeddings de palavras, analisamos a distribuição dos clusters de embeddings de sentenças de hinos 
 em relação às categorias originais da coletânea. Assim, podemos entender como os agrupamentos baseados em embeddings de frases
@@ -300,7 +313,7 @@ fig_ct = px.imshow(
         "y": "Cluster (sent_cluster)",
         "color": "Proporção (%)",
     },
-    color_continuous_scale="Viridis",
+    color_continuous_scale="Cividis",
     width=800,
     height=420,
 )
@@ -342,7 +355,7 @@ para definir as categorias da coletânea podem ser diferentes dos aspectos semâ
 
 # Obtenção de tópicos: BERTopic(embedding_model=model)
 """
-# Tópicos comuns entre os hinos
+## Tópicos comuns entre os hinos
 
 Usando a técnica BERTopic, identificamos tópicos comuns entre os hinos com base nos embeddings de frases. Cada tópico é representado 
 por um conjunto de palavras-chave que capturam o tema central dos hinos associados a esse tópico. Os tópicos não estão relacionados 
@@ -380,14 +393,14 @@ incomum na coletânea, provavelmente relacionado a um único hino: 310 - Mestre,
 
 # - Distribuição de tópicos
 """
-## Distribuição de Tópicos nos Hinos
+### Distribuição de Tópicos nos Hinos
 
 Utilizando os tópicos identificados pelo BERTopic, visualizamos a distribuição dos hinos em relação a esses tópicos. Vários pontos
 estão marcados com valor igual a -1: isso indica que esses hinos não foram atribuídos a nenhum tópico específico pelo modelo,
 sendo considerados "outliers" ou hinos que não se encaixam bem em nenhum dos tópicos identificados.
 
 """
-st.caption("Na legenda do gráfico, é possível clicar no tópico -1 para ocultar esses pontos e melhorar a visualização.")
+st.info("Na legenda do gráfico, é possível clicar no tópico -1 para ocultar esses pontos e melhorar a visualização.")
 
 fig = px.scatter(
     hinos_analise,

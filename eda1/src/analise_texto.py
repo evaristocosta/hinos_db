@@ -18,7 +18,7 @@ explicacao_filtros = """
 As explicações deste texto se baseiam no todo, sem aplicação de filtros, já que estes
 alteram os resultados ilustrados nos gráficos.
 """
-st.badge(explicacao_filtros, icon="ℹ️")
+st.info(explicacao_filtros, icon="ℹ️")
 
 """
 As tabelas a seguir mostram os 10 hinos com maior e menor número de palavras, respectivamente.
@@ -444,7 +444,7 @@ indica sua frequência. A seguir, apresentamos a Wordcloud das palavras mais fre
 
 """
 
-st.badge("Experimente usar o filtro na barra lateral - a Wordcloud muda de acordo com as categorias selecionadas.", icon="ℹ️")
+st.info("Experimente usar o filtro na barra lateral - a Wordcloud muda de acordo com as categorias selecionadas.", icon="ℹ️")
 word_freq_dict = dict(zip(contagem_palav["palavra"], contagem_palav["contagem"]))
 
 from wordcloud import WordCloud

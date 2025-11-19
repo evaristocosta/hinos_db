@@ -42,7 +42,7 @@ uma vez com o título principal e outra com o subtítulo.
 
 O tamanho aqui, é medido em número de caracteres, considerando espaços. 
 """
-st.badge("É possível usar o filtro na barra lateral para restringir a análise a categorias específicas de hinos.", icon="ℹ️")
+st.info("É possível usar o filtro na barra lateral para restringir a análise a categorias específicas de hinos.", icon="ℹ️")
 
 
 st.sidebar.markdown("# Filtros")

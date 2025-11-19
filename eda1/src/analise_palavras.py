@@ -147,6 +147,8 @@ semelhantes são os hinos entre si com base no conteúdo textual. Valores próxi
 similaridade, enquanto valores próximos de 0 indicam baixa similaridade.
 """
 
+st.warning("Aplicar filtros pode causar problemas na visualização da matriz de similaridade." , icon="⚠️")
+
 
 # Juntar os tokens em strings
 hinos_analise["tokens_str"] = hinos_analise["tokens_no_stops"].apply(
@@ -162,10 +164,14 @@ similarity_df_tfidf = pd.DataFrame(
     similarity_tfidf, index=hinos_analise.index, columns=hinos_analise.index
 )
 
+# Filtrar a matriz conforme os índices atuais de hinos_analise
+sim_filtered = similarity_df_tfidf.loc[hinos_analise.index, hinos_analise.index]
+
 fig = px.imshow(
-    similarity_df_tfidf,
+    sim_filtered,
+    x=sim_filtered.columns,
+    y=sim_filtered.index,
     labels=dict(x="Hinos", y="Hinos", color="Similaridade"),
-    # title="Matriz de Similaridade TF-IDF",
     width=600,
     height=600,
     color_continuous_scale="GnBu",

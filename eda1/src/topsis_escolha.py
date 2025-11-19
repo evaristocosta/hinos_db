@@ -7,7 +7,7 @@ from topsis_hamedbaziyad import TOPSIS
 
 #    TOPSIS (eda1_part6):
 
-st.title("Seleção de similares ✅")
+st.title("✅ Seleção de similares")
 hinos_analise: pd.DataFrame = hinos_processados()
 similarity_word, similarity_sent, similarity_emocoes = similarity_matrices()
 
@@ -23,13 +23,22 @@ com base na distância de uma solução ideal positiva e negativa.
 # - Funcionamento
 # - Escolha do hino
 
-"""### 1. Escolha um hino para ver sugestões similares:"""
-hymn_num = st.number_input(
-    "Número do hino",
-    min_value=int(hinos_analise.index.min()),
-    max_value=int(hinos_analise.index.max()),
-    value=106,  # um bom exemplo pra iniciar
+"""### Escolha um hino para ver sugestões similares:"""
+hinos_opcoes = [
+    f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()
+]
+hino_selecionado = st.selectbox(
+    "Pesquisar hino (número ou nome)",
+    options=hinos_opcoes,
+    placeholder="Digite para buscar...",
+    index=None,
+    help="Digite o número ou parte do nome do hino para pesquisar",
 )
+if not hino_selecionado:
+    st.warning("Por favor, selecione um hino para prosseguir.")
+    st.stop()
+
+hymn_num = int(hino_selecionado.split(" - ")[0])
 hino_sample = hinos_analise.loc[hymn_num]
 
 
@@ -76,7 +85,7 @@ hinos_restantes["sim_sent"] = similarity_matrix_sent_sample.values
 hinos_restantes["sim_emocao"] = similarity_matrix_emocoes_sample.values
 
 # - Escolha dos pesos
-"""### 2. Defina os pesos para cada critério"""
+"""### Defina os pesos para cada critério"""
 
 categories = [
     "categoria_id",

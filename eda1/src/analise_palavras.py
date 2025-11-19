@@ -6,10 +6,9 @@ from collections import Counter
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import plotly.express as px
-import altair as alt
 
 
-st.title("Análise de palavras ✒️")
+st.title("✒️ Análise de palavras")
 """
 Nesta seção, exploramos as palavras presentes nos hinos através de n-gramas e análise de similaridade utilizando TF-IDF. 
 """
@@ -226,7 +225,7 @@ if hino_selecionado:
     hymn_num = int(hino_selecionado.split(" - ")[0])
     hymn_name = hinos_analise.loc[hymn_num, "nome"]
 
-    st.markdown(f"### 🎵 Hino {hymn_num} — {hymn_name}")
+    st.metric(label="🎵 Hino", value=f"{hymn_num} — {hymn_name}")
 
     col1, col2 = st.columns(2)
     with col1:

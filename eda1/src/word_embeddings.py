@@ -7,7 +7,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import NMF
 
 #    Word embeddings (eda1_part4):
-st.title("Embeddings de Palavras 📝")
+st.title("📝 Embeddings de Palavras")
 
 """
 Nesta seção, exploramos os embeddings de palavras gerados a partir dos textos dos hinos.
@@ -37,7 +37,7 @@ if categorias_selecionadas:
 # - Matrizes de similaridade com heatmap
 # estratégia de peso: TF-IDF
 """
-# Matriz de Similaridade entre Hinos
+## Matriz de Similaridade entre Hinos
 
 Aqui, visualizamos a matriz de similaridade entre os hinos com base nos embeddings de palavras, calculada a partir da 
 estratégia de peso TF-IDF. Cada célula na matriz representa o grau de similaridade entre dois hinos, onde valores 
@@ -50,7 +50,7 @@ fig = px.imshow(
     labels=dict(x="Hinos", y="Hinos", color="Similaridade"),
     width=600,
     height=600,
-    color_continuous_scale="Viridis",
+    color_continuous_scale="Cividis",
 )
 st.plotly_chart(fig)
 
@@ -67,41 +67,50 @@ palavras diferentes, eles compartilham um significado semântico semelhante, rel
 
 # - Hinos mais semelhantes
 """
-## Hinos mais semelhantes
+### Hinos mais semelhantes
 
 A seguir, selecione um hino para ver os mais semelhantes com base nos embeddings de palavras.
 """
 
-hymn_num = st.number_input(
-    "Número do hino",
-    min_value=int(hinos_analise.index.min()),
-    max_value=int(hinos_analise.index.max()),
-    value=106,  # um bom exemplo pra iniciar
+hinos_opcoes = [
+    f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()
+]
+hino_selecionado = st.selectbox(
+    "Pesquisar hino (número ou nome)",
+    options=hinos_opcoes,
+    placeholder="Digite para buscar...",
+    index=None,
+    help="Digite o número ou parte do nome do hino para pesquisar",
 )
-hymn_name = hinos_analise.loc[hymn_num, "nome"]
-st.markdown(f"**🎵 Hino {hymn_num} — {hymn_name}:**")
+if hino_selecionado:
+    hymn_num = int(hino_selecionado.split(" - ")[0])
+    hymn_name = hinos_analise.loc[hymn_num, "nome"]
 
-similarities_tfidf = list(enumerate(similarity_word.iloc[hymn_num]))
-similarities_tfidf = sorted(similarities_tfidf, key=lambda x: x[1], reverse=True)
+    st.metric(label="🎵 Hino", value=f"{hymn_num} — {hymn_name}")
 
-rows = []
-for idx, score in similarities_tfidf[1:11]:
-    rows.append(
-        {
-            "Hino": int(idx),
-            "Nome": hinos_analise["nome"].iloc[idx],
-            "Similaridade": float(score),
-        }
-    )
-df_sim = pd.DataFrame(rows).set_index("Hino")
-st.dataframe(df_sim.style.format({"Similaridade": "{:.3f}"}))
+    similarities_tfidf = list(enumerate(similarity_word.iloc[hymn_num]))
+    similarities_tfidf = sorted(similarities_tfidf, key=lambda x: x[1], reverse=True)
+
+    rows = []
+    for idx, score in similarities_tfidf[1:11]:
+        rows.append(
+            {
+                "Hino": int(idx),
+                "Nome": hinos_analise["nome"].iloc[idx],
+                "Similaridade": float(score),
+            }
+        )
+    df_sim = pd.DataFrame(rows).set_index("Hino")
+    st.dataframe(df_sim.style.format({"Similaridade": "{:.3f}"}))
+else:
+    st.caption("Selecione um hino para ver os mais semelhantes.")
 
 # - Clustering
 # Diminuição de dimensionalidade: UMAP
 # Clustering: K-Means
 # Definição de clusters: silhueta - 4º melhor valor, 10 clusters
 """
-# Clustering de Hinos
+## Clustering de Hinos
 
 Utilizando os embeddings de palavras, aplicamos técnicas de redução de dimensionalidade (UMAP) e clustering (K-Means) para 
 agrupar os hinos com base em suas similaridades semânticas. A visualização abaixo mostra os hinos em um espaço bidimensional,
@@ -142,7 +151,7 @@ são semanticamente distintos dos demais.
 
 # - Termos mais frequentes por cluster
 """
-## Termos mais frequentes por cluster
+### Termos mais frequentes por cluster
 
 A seguir, apresentamos os primeiros 8 termos mais frequentes em cada cluster de hinos, conforme identificado pelo 
 algoritmo de clustering. Esses termos fornecem insights sobre os temas predominantes em cada grupo de hinos. 
@@ -185,7 +194,7 @@ hinos_cluster9 = hinos_analise[hinos_analise["word_cluster"] == 9][
     ["nome", "categoria_abr"]
 ].rename_axis("Nº")
 f"""
-## Cluster 9 em perspectiva
+### Cluster 9 em perspectiva
 
 O cluster 9 é composto por um total de {hinos_cluster9.shape[0]} hinos. A seguir, são apresentados os hinos 
 pertencentes a este cluster, que se destaca por sua separação no espaço UMAP.
@@ -203,7 +212,7 @@ pode ser atribuída a outros fatores semânticos ou estilísticos presentes nos 
 
 
 """ 
-## Relação entre Clusters e Categorias da Coletânea
+### Relação entre Clusters e Categorias da Coletânea
 
 
 Analisamos a distribuição dos clusters de hinos em relação às categorias originais da coletânea. Isso nos ajuda a entender como os 
@@ -232,10 +241,10 @@ fig_ct = px.imshow(
     y=y,
     labels={
         "x": "Categoria da Coletânea",
-        "y": "Cluster (word_cluster)",
+        "y": "Cluster",
         "color": "Proporção (%)",
     },
-    color_continuous_scale="Viridis",
+    color_continuous_scale="Cividis",
     width=800,
     height=420,
 )
@@ -276,7 +285,7 @@ complexidade dos temas abordados nos hinos.
 
 # - Tópicos comuns
 """
-# Tópicos comuns entre os hinos
+## Tópicos comuns entre os hinos
 
 Utilizando a técnica de Non-negative Matrix Factorization (NMF) aplicada à representação TF-IDF dos textos dos hinos,
 identificamos tópicos comuns presentes nos hinos. Usamos o número de clusters previamente definido como o número de 
@@ -326,7 +335,7 @@ Ainda, o tópico 6 contém termos relacionados ao clamor pelo sangue de Jesus, e
 
 # - Distribuição de tópicos
 """
-## Distribuição de Tópicos nos Hinos
+### Distribuição de Tópicos nos Hinos
 
 Podemos usar os tópicos identificados para analisar a distribuição dos hinos no espaço UMAP, colorindo-os de acordo com o tópico
 dominante atribuído pelo NMF.
@@ -360,7 +369,7 @@ hinos_topico4 = hinos_analise[hinos_analise["NMF_topic"] == 4][
 ].rename_axis("Nº")
 
 f"""
-## Hinos do Tópico 4
+### Hinos do Tópico 4
 
 O tópico 4 é composto por um total de {hinos_topico4.shape[0]} hinos, mais do que o cluster 9 (que tem 
 {hinos_cluster9.shape[0]} hinos). A seguir, apresentamos os hinos pertencentes ao tópico 4.

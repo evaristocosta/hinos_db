@@ -1,4 +1,5 @@
 import streamlit as st
+from pathlib import Path
 
 st.title("🎵 Hinos em Dados")
 """
@@ -6,7 +7,11 @@ Seja bem-vindo ao **Hinos em Dados**!
 
 Aqui você pode explorar diversas informações e análises estatísticas sobre os hinos da Coletânea de 
 Hinos da Igreja Cristã Maranata, desconsiderando os hinos de Crianças, Intermediários e Adolescentes (CIAs).
+"""
 
+st.image(Path("assets\\wordcloud.png"), caption="Nuvem de palavras, da seção Exploração de Palavras")
+
+"""
 ## 📊 Objetivo do Projeto
 
 Este projeto tem como propósito realizar uma **Análise Exploratória de Dados (EDA)** da 
@@ -28,7 +33,9 @@ passo a passo todo o processo de exploração e análise dos dados.
 ## 📋 Sumário
 
 Utilize o menu lateral para navegar entre as diferentes análises disponíveis:
-
+"""
+st.badge("**Importante**: As análises estão em ordem de complexidade crescente.", icon="ℹ️")
+"""
 - **📆 Tabela Exploratória**: Visualize todos os hinos em formato de tabela, com informações como título, categoria, número de palavras e muito mais.
 
 - **📑 Categorias dos Louvores**: Explore a distribuição dos hinos por categorias temáticas e entenda como estão organizados.

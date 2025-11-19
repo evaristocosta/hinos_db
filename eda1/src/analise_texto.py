@@ -5,7 +5,7 @@ import plotly.express as px
 import altair as alt
 from pipeline import hinos_processados
 
-st.title("Exploração de palavras 🔡")
+st.title("🔡 Exploração de palavras")
 """
 Nesta seção, exploramos os textos dos hinos presentes na coletânea.
 
@@ -15,10 +15,10 @@ essa análise, consideramos todas as palavras. Isso porque são textos de hinos,
 """
 
 explicacao_filtros = """
-**Importante:** as explicações deste texto se baseiam na coletânea como um todo, sem aplicação de filtros, já que estes
+As explicações deste texto se baseiam no todo, sem aplicação de filtros, já que estes
 alteram os resultados ilustrados nos gráficos.
 """
-st.caption(explicacao_filtros)
+st.badge(explicacao_filtros, icon="ℹ️")
 
 """
 As tabelas a seguir mostram os 10 hinos com maior e menor número de palavras, respectivamente.
@@ -45,7 +45,7 @@ hinos_analise = hinos_analise.rename_axis("Nº")
 st.sidebar.header("Filtros")
 categorias_unicas = hinos_analise["categoria_abr"].unique()
 categorias_selecionadas = st.sidebar.multiselect(
-    "Selecione as categorias", options=categorias_unicas
+    "Selecione as categorias", options=categorias_unicas, placeholder="Selecione categorias..."
 )
 if categorias_selecionadas:
     hinos_analise = hinos_analise[
@@ -130,7 +130,7 @@ else:
 
     box = (
         alt.Chart(hinos_analise)
-        .mark_boxplot()
+        .mark_boxplot(color="#6181a8")
         .encode(
             x=alt.X(
                 "categoria_abr:N",
@@ -148,14 +148,14 @@ else:
     # Linha pontilhada da média
     mean_rule = (
         alt.Chart(mean_df)
-        .mark_rule(strokeDash=[6, 4], size=1)
+        .mark_rule(strokeDash=[6, 4], size=1, color="#d7a04f")
         .encode(y=alt.Y("mean:Q"))
     )
 
     # Rótulo com o valor da média (colocado à esquerda da área do gráfico)
     mean_label = (
         alt.Chart(mean_df)
-        .mark_text(align="left", dx=6, dy=-6)
+        .mark_text(align="left", dx=6, dy=-6, color="#d7a04f")
         .encode(y=alt.Y("mean:Q"), text=alt.Text("mean:Q", format=".1f"))
         .encode(x=alt.value(0))
     )
@@ -164,7 +164,7 @@ else:
         title="Relação Entre Número de Palavras e Categoria", width="container"
     )
 
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart)
 
 
 """
@@ -175,25 +175,42 @@ tenha outliers que chegam a 261 palavras (Sequência de Louvores Nº 1). A categ
 variação na quantia de palavras é a de "SANTIFICAÇÃO E DERRAMAMENTO DO ESPÍRITO SANTO", com
 hinos de vão de 24 a 345 palavras, sendo este o maior hino da coletânea.
 
-A seguir, pode pesquisar o número de palavras de um hino específico:
+A seguir, é possível pesquisar o número de palavras de um hino específico:
 
 """
+hinos_opcoes = [
+    f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()
+]
+
 col1, col2 = st.columns(2)
 with col1:
     # pesquisa de numero de palavras por hino
-    hymn_num = st.number_input(
-        "Número do hino",
-        min_value=int(hinos_analise.index.min()),
-        max_value=int(hinos_analise.index.max()),
-        value=int(hinos_analise.index.min()),
+    hino_selecionado = st.selectbox(
+        "Pesquisar hino (número ou nome)",
+        options=hinos_opcoes,
+        placeholder="Digite para buscar...",
+        index=None,
+        help="Digite o número ou parte do nome do hino para pesquisar",
     )
-with col2:
+    
+# Extrair o número do hino da seleção
+if hino_selecionado:
+    hymn_num = int(hino_selecionado.split(" - ")[0])
     hymn_title = hinos_analise.loc[hymn_num, "nome"]
     hymn_num_words = hinos_analise.loc[hymn_num, "num_tokens"]
-    st.write(
-        f"🎵 Hino {hymn_num} -- {hymn_title}:<br>**{hymn_num_words} palavras**",
-        unsafe_allow_html=True,
-    )
+
+with col2:
+    if hino_selecionado:
+        st.metric(
+            label=f"🎵 Hino {hymn_num} - {hymn_title}",
+            value=f"{hymn_num_words} palavras",
+            width="content",
+            height="stretch",
+        )
+    else:
+        st.caption("Selecione um hino para ver o tamanho do título.")
+    
+st.divider()
 
 """
 Para prosseguir com a análise textual, precisamos realizar algumas etapas de 
@@ -212,7 +229,6 @@ por questões de análise textual.
 
 
 # - Total de palavras únicas e mais longas
-st.markdown("### Estatísticas de Vocabulário")
 palavras = hinos_analise["tokens_no_stops"].explode().tolist()
 palavras_unicas = list(set(palavras))
 palavras_unicas.sort(key=len, reverse=True)
@@ -223,6 +239,8 @@ texto_se_filtro = (
     else ""
 )
 f"""
+## Estatísticas de Vocabulário
+
 Na coletânea, {texto_se_filtro}existe um total de {len(palavras)} palavras, das quais {len(palavras_unicas)} 
 são únicas, ou seja, aparecem apenas uma vez no conjunto de hinos.
 
@@ -240,7 +258,7 @@ mais_longas = pd.DataFrame(
 # Gráfico Altair das palavras mais longas
 chart = (
     alt.Chart(mais_longas)
-    .mark_bar()
+    .mark_bar(color="#6181a8")
     .encode(
         x=alt.X("tamanho:Q", title="Tamanho da palavra"),
         y=alt.Y(
@@ -256,7 +274,7 @@ chart = (
     .properties(title="Top 10 palavras mais longas", width="container", height=400)
 )
 
-st.altair_chart(chart, use_container_width=True)
+st.altair_chart(chart)
 
 
 # - Histograma de frequência de tamanhos
@@ -289,8 +307,8 @@ else:
         df_lengths,
         x="length",
         nbins=max_len,
-        # color_discrete_sequence=["#2a9d8f"],
-        title="Distribuição dos tamanhos das palavras (tokens sem stopwords)",
+        color_discrete_sequence=["#6181a8"],
+        title="Distribuição do tamanho das palavras (tokens sem stopwords)",
         labels={
             "length": "Tamanho da palavra (número de caracteres)",
             "count": "Frequência",
@@ -300,13 +318,13 @@ else:
     # Linhas de média e mediana
     fig.add_vline(
         x=media,
-        line=dict(color="#e76f51", dash="dash"),
+        line=dict(color="#d80d11", dash="dash"),
         # annotation_text=f"Média: {media:.2f}",
         # annotation_position="top right",
     )
     fig.add_vline(
         x=mediana,
-        line=dict(color="#264653", dash="dashdot"),
+        line=dict(color="#d7a04f", dash="dashdot"),
         # annotation_text=f"Mediana: {mediana:.0f}",
         # annotation_position="top right",
     )
@@ -327,13 +345,13 @@ else:
     fig.update_layout(xaxis=dict(dtick=1), bargap=0.05)
     fig.update_xaxes(tickangle=-45)
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
 
 """
 Podemos notar que a maioria das palavras tem entre 3 e 7 caracteres, com picos em 5 e 6 caracteres. Isso indica 
-que a distribuição dos tamanhos das palavras é ligeiramente assimétrica, com uma tendência para palavras um 
-pouco mais curtas.
+que a distribuição do tamanho das palavras é ligeiramente assimétrica, com uma tendência para palavras um 
+pouco mais curtas. De forma geral, entendemos que palavras mais curtas são mais comuns na coletânea de hinos.
 """
 
 # - Bag-of-words com plot
@@ -350,7 +368,7 @@ contagem_palav["percentual"] = contagem_palav["contagem"] / len(palavras) * 100
 """
 ## Bag-of-Words
 
-A técnica de Bag-of-Words (BoW) é uma representação simples e eficaz de textos, onde cada documento é representado
+A técnica de Bag-of-Words (BoW - "sacola de palavras") é uma representação simples e eficaz de textos, onde cada documento é representado
 como uma "sacola" de suas palavras, ignorando a ordem e a gramática, mas mantendo a frequência de cada palavra.
 Aqui, aplicamos a técnica de Bag-of-Words aos hinos da coletânea, considerando apenas as palavras que não são
 stopwords.
@@ -368,7 +386,7 @@ top20["palavra"] = pd.Categorical(
 
 chart = (
     alt.Chart(top20)
-    .mark_bar()
+    .mark_bar(color="#6181a8")
     .encode(
         x=alt.X("contagem:Q", title="Contagem"),
         y=alt.Y(
@@ -405,7 +423,6 @@ labels = (
 
 st.altair_chart(
     (chart + labels).configure_axis(labelFontSize=12, titleFontSize=13),
-    use_container_width=True,
 )
 
 
@@ -419,24 +436,26 @@ igreja à Jesus: vem!
 
 # - Wordcloud
 """
-## Wordcloud
+## Nuvem de Palavras (Wordcloud)
 
 
-A Wordcloud é uma representação visual das palavras mais frequentes em um texto, onde o tamanho de cada palavra
+A nuvem de palavras (wordcloud) é uma representação visual das palavras mais frequentes em um texto, onde o tamanho de cada palavra
 indica sua frequência. A seguir, apresentamos a Wordcloud das palavras mais frequentes nos hinos da coletânea.
 
 """
+
+st.badge("Experimente usar o filtro na barra lateral - a Wordcloud muda de acordo com as categorias selecionadas.", icon="ℹ️")
 word_freq_dict = dict(zip(contagem_palav["palavra"], contagem_palav["contagem"]))
 
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
 wordcloud = WordCloud(
-    width=800,
-    height=400,
+    width=1920,
+    height=960,
     background_color="white",
     max_words=100,
-    colormap="viridis",
+    colormap="cividis",
     relative_scaling=0.5,
     random_state=42,
 ).generate_from_frequencies(word_freq_dict)
@@ -447,5 +466,5 @@ ax.imshow(wordcloud, interpolation="bilinear")
 ax.axis("off")
 # ax.set_title("Word Cloud - Palavras mais frequentes nos hinos", fontsize=16, pad=20)
 plt.tight_layout()
-st.pyplot(fig, use_container_width=True)
+st.pyplot(fig, width='content')
 plt.close(fig)

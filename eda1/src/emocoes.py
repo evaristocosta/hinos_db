@@ -5,9 +5,10 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import numpy as np
+from scipy.spatial.distance import euclidean
 
 # Emoções (eda1_part7):
-st.title("Análise de emoções nos hinos 🎭")
+st.title("🎭 Análise de emoções nos hinos")
 
 hinos_analise: pd.DataFrame = hinos_processados()
 _, _, similarity_emocoes = similarity_matrices()
@@ -21,21 +22,19 @@ em português. As principais emoções analisadas incluem alegria, tristeza, oti
 entre outras.
 """
 
-
-
 # top 10 emoções dominantes nos hinos (sem 'neutral')
 
 """
-# Distribuição das emoções dominantes
+## Distribuição das emoções dominantes
 
 No gráfico abaixo, visualizamos as 10 emoções dominantes mais frequentes nos hinos, 
 excluindo a categoria 'neutral' (neutra). Isso nos ajuda a entender quais emoções são mais 
 prevalentes na coletânea.
 """
 
-st.caption("""
-    Observação: o nome das emoções está em inglês por padrão, por conta do modelo utilizado.
-""")
+st.info("""
+    O nome das emoções está em inglês por padrão, por conta do modelo utilizado.
+""", icon="ℹ️")
 
 emocao_counts = pd.Series(hinos_analise["emocao_dominante_sem_neutral"].tolist()).value_counts().head(10)
 
@@ -54,6 +53,7 @@ fig_bar = px.bar(
     orientation='h',
     labels={'contagem': 'Número de hinos', 'emocao': 'Emoção'},
     custom_data=['percentual'],
+    color_discrete_sequence=["#6181a8"],
 )
 
 fig_bar.update_traces(
@@ -75,7 +75,7 @@ indicando uma tendência geral de otimismo e alegria na coletânea.
 
 # matriz de correlação
 """
-## Matriz de correlação entre emoções
+### Matriz de correlação entre emoções
 
 Como análise continuada, exploramos a correlação entre diferentes emoções expressas nos hinos. 
 A matriz de correlação abaixo mostra como as emoções se relacionam entre si, indicando quais
@@ -133,7 +133,7 @@ nos hinos -- indicando que hinos neutros tendem a evitar expressar emoções for
 
 # diversidade (shannon, concentração, exemplos)
 """
-# Diversidade emocional nos hinos
+## Diversidade emocional nos hinos
 
 A diversidade emocional nos hinos é medida pela Entropia de Shannon, que captura a variedade e a distribuição das 
 emoções expressas. Quanto maior a entropia, maior a diversidade emocional. Além disso, analisamos a concentração emocional, 
@@ -150,23 +150,23 @@ fig = make_subplots(
 # Histograma de diversidade
 fig.add_trace(
     go.Histogram(x=hinos_analise["diversidade_emocional"], nbinsx=30, 
-                 marker_color='teal', opacity=0.7, name='Diversidade'),
+                 marker_color='#6181a8', opacity=0.7, name='Diversidade'),
     row=1, col=1
 )
 # Linha vertical da média
 media_div = hinos_analise["diversidade_emocional"].mean()
-fig.add_vline(x=media_div, line_dash="dash", line_color="red", 
+fig.add_vline(x=media_div, line_dash="dash", line_color="#d80d11", 
               annotation_text=f"Média: {media_div:.3f}", row=1, col=1)
 
 # Histograma de concentração
 fig.add_trace(
     go.Histogram(x=hinos_analise["concentracao_emocional"], nbinsx=30,
-                 marker_color='coral', opacity=0.7, name='Concentração'),
+                 marker_color='#d7a04f', opacity=0.7, name='Concentração'),
     row=1, col=2
 )
 # Linha vertical da média
 media_conc = hinos_analise["concentracao_emocional"].mean()
-fig.add_vline(x=media_conc, line_dash="dash", line_color="red",
+fig.add_vline(x=media_conc, line_dash="dash", line_color="#d80d11",
               annotation_text=f"Média: {media_conc:.3f}", row=1, col=2)
 
 fig.update_xaxes(title_text="Entropia", row=1, col=1)
@@ -194,7 +194,7 @@ indicando que, em média, a emoção dominante representa cerca de 63.9% do tota
 
 # Exemplos de hinos mais diversos vs. mais concentrados
 """
-## Exemplos de hinos com diferentes perfis emocionais
+### Exemplos de hinos com diferentes perfis emocionais
 
 Aqui, destacamos exemplos de hinos que exemplificam diversidade e concentração emocional.
 
@@ -277,7 +277,7 @@ indicando que esses hinos são mais neutros em termos emocionais.
 
 # distribuição de categorias emocionais
 """
-# Distribuição das categorias emocionais nos hinos
+## Distribuição das categorias emocionais nos hinos
 
 Das diversas categorias emocionais atribuídas aos hinos, podemos organizá-las em três grandes grupos:
 
@@ -291,7 +291,7 @@ A seguir, exploramos a distribuição dessas categorias emocionais na coletânea
 categoria_counts = hinos_analise['categoria_dominante'].value_counts()
 
 # Gráfico de barras horizontal empilhado das categorias emocionais
-color_seq = ['lightgreen', 'lightgray', 'lightcoral']
+color_seq = ['#a3b350', 'lightgray', '#d80d11']
 total = int(categoria_counts.sum()) if not np.isnan(categoria_counts.sum()) else 0
 
 fig = go.Figure()
@@ -335,7 +335,7 @@ fig_scatter = px.scatter(
     x='score_positivas',
     y='score_negativas',
     color='score_neutras',
-    color_continuous_scale='viridis',
+    color_continuous_scale='cividis',
     opacity=0.5,
     title='Relação entre Emoções Positivas e Negativas',
     labels={
@@ -368,7 +368,7 @@ hino mais positivo é o **{hinos_analise.loc[hinos_analise['valencia_emocional']
 
 # casos extremos
 """
-## Casos extremos 
+### Casos extremos 
 
 Aqui, destacamos hinos que se sobressaem em diferentes aspectos emocionais, como os mais atípicos, típicos, 
 negativos e balanceados. 
@@ -406,8 +406,7 @@ for emocao in emocoes_principais:
 # Mostrar tabela compacta (emoção x top3)
 df_top3 = pd.DataFrame(rows).set_index("emocao").rename_axis("Emoção")
 """
-### Ranking de Hinos por Emoção Principal
-
+**Ranking de Hinos por Emoção Principal:**
 A tabela abaixo apresenta os três hinos com os maiores scores para cada uma das 8 principais emoções identificadas.
 
 """
@@ -439,9 +438,6 @@ são capturadas e refletidas nos hinos.
 
 
 # Calcular distância do perfil emocional médio
-from scipy.spatial.distance import euclidean
-import numpy as np
-
 # Criar vetor de emoções médias
 emocoes_todas = set()
 for emocoes in hinos_analise["emocoes"]:
@@ -622,155 +618,53 @@ Por fim, hinos com perfis emocionais balanceados, como "Quão difícil é, Senho
 demonstram uma rica tapeçaria de emoções, refletindo a complexidade da experiência humana em sua relação com o divino.
 """
 
-
-# distribuição da intensidade emocional
-# distribuição da complexidade emocional
-# relação entre valência e intensidade
-
-# """
-# # Intensidade e Complexidade Emocional
-# """
-
-# fig2 = make_subplots(
-#     rows=2, cols=2,
-#     subplot_titles=(
-#         "Distribuição da Intensidade Emocional<br>(Soma das emoções não-neutras)",
-#         "Distribuição da Complexidade Emocional<br>(Número de emoções fortes)",
-#         "",
-#         "Relação entre Valência e Intensidade<br>(cor = diversidade)"
-#     ),
-#     specs=[[{"type": "histogram"}, {"type": "histogram"}],
-#            [{"type": "xy"}, {"type": "scatter"}]]
-# )
-
-# # 1. Intensidade emocional
-# media_int = hinos_analise['intensidade_emocional'].mean()
-# fig2.add_trace(
-#     go.Histogram(x=hinos_analise['intensidade_emocional'], nbinsx=30,
-#                  marker_color='orange', opacity=0.7, name='Intensidade'),
-#     row=1, col=1
-# )
-# fig2.add_vline(x=media_int, line_dash="dash", line_color="red",
-#                annotation_text=f"Média: {media_int:.3f}", row=1, col=1)
-
-# # 2. Número de emoções fortes
-# media_num = hinos_analise['num_emocoes_fortes'].mean()
-# fig2.add_trace(
-#     go.Histogram(x=hinos_analise['num_emocoes_fortes'],
-#                  marker_color='purple', opacity=0.7, name='Complexidade'),
-#     row=1, col=2
-# )
-# fig2.add_vline(x=media_num, line_dash="dash", line_color="red",
-#                annotation_text=f"Média: {media_num:.1f}", row=1, col=2)
-
-# # 3. Scatter: valencia vs intensidade
-# fig2.add_trace(
-#     go.Scatter(
-#         x=hinos_analise['valencia_emocional'],
-#         y=hinos_analise['intensidade_emocional'],
-#         mode='markers',
-#         marker=dict(
-#             color=hinos_analise['diversidade_emocional'],
-#             colorscale='viridis',
-#             opacity=0.6,
-#             showscale=True,
-#             colorbar=dict(title="Diversidade", x=1.15)
-#         ),
-#         name='Hinos'
-#     ),
-#     row=2, col=2
-# )
-# fig2.add_vline(x=0, line_dash="dash", line_color="black", opacity=0.5, row=2, col=2)
-
-# fig2.update_xaxes(title_text="Intensidade", row=1, col=1)
-# fig2.update_xaxes(title_text="Número de Emoções (score ≥ 0.1)", row=1, col=2)
-# fig2.update_xaxes(title_text="Valência Emocional (positivas - negativas)", row=2, col=2)
-# fig2.update_yaxes(title_text="Frequência", row=1, col=1)
-# fig2.update_yaxes(title_text="Frequência", row=1, col=2)
-# fig2.update_yaxes(title_text="Intensidade Emocional (soma não-neutras)", row=2, col=2)
-
-# fig2.update_layout(height=800, showlegend=False)
-# st.plotly_chart(fig2, use_container_width=True)
-
-# # Rankings - Top Hinos por Diferentes Métricas
-# """
-# # Rankings - Top Hinos por Diferentes Métricas
-# """
-
-# col1, col2 = st.columns(2)
-
-# with col1:
-#     st.write("### TOP 10 HINOS MAIS ALEGRES")
-#     top_alegres = hinos_analise.nlargest(10, 'alegria_liquida')[['nome', 'alegria_liquida']]
-#     top_alegres['rank'] = range(1, len(top_alegres) + 1)
-#     st.dataframe(top_alegres[['rank', 'nome', 'alegria_liquida']], hide_index=True, use_container_width=True)
-
-# with col2:
-#     st.write("### TOP 10 HINOS MAIS TRISTES")
-#     top_tristes = hinos_analise.nsmallest(10, 'alegria_liquida')[['nome', 'alegria_liquida']]
-#     top_tristes['rank'] = range(1, len(top_tristes) + 1)
-#     st.dataframe(top_tristes[['rank', 'nome', 'alegria_liquida']], hide_index=True, use_container_width=True)
-
-# col3, col4 = st.columns(2)
-
-# with col3:
-#     st.write("### TOP 10 HINOS MAIS INTENSOS")
-#     top_intensos = hinos_analise.nlargest(10, 'intensidade_emocional')[['nome', 'intensidade_emocional']]
-#     top_intensos['rank'] = range(1, len(top_intensos) + 1)
-#     st.dataframe(top_intensos[['rank', 'nome', 'intensidade_emocional']], hide_index=True, use_container_width=True)
-
-# with col4:
-#     st.write("### TOP 10 HINOS MAIS COMPLEXOS")
-#     top_complexos = hinos_analise.nlargest(10, 'num_emocoes_fortes')[['nome', 'num_emocoes_fortes']]
-#     top_complexos['rank'] = range(1, len(top_complexos) + 1)
-#     st.dataframe(top_complexos[['rank', 'nome', 'num_emocoes_fortes']], hide_index=True, use_container_width=True)
-
-# st.write("### TOP 10 HINOS MAIS POSITIVOS (maior valência)")
-# top_positivos = hinos_analise.nlargest(10, 'valencia_emocional')[['nome', 'valencia_emocional']]
-# top_positivos['rank'] = range(1, len(top_positivos) + 1)
-# st.dataframe(top_positivos[['rank', 'nome', 'valencia_emocional']], hide_index=True, use_container_width=True)
-
-
-
 """
-## Hinos mais semelhantes emocionalmente
+### Hinos mais semelhantes emocionalmente
 
 A seguir, selecione um hino para ver os mais semelhantes com base no perfil emocional.
 """
 
-hymn_num = st.number_input(
-    "Número do hino",
-    min_value=int(hinos_analise.index.min()),
-    max_value=int(hinos_analise.index.max()),
-    value=90,  # um bom exemplo pra iniciar
+hinos_opcoes = [
+    f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()
+]
+hino_selecionado = st.selectbox(
+    "Pesquisar hino (número ou nome)",
+    options=hinos_opcoes,
+    placeholder="Digite para buscar...",
+    index=None,
+    help="Digite o número ou parte do nome do hino para pesquisar",
 )
-hymn_name = hinos_analise.loc[hymn_num, "nome"]
-f"""
-**🎵 Hino {hymn_num} — {hymn_name}**
+if hino_selecionado:
+    hymn_num = int(hino_selecionado.split(" - ")[0])
+    hymn_name = hinos_analise.loc[hymn_num, "nome"]
 
-Emocoes principais: {', '.join([f'{k}({v:.2f})' for k, v in sorted(hinos_analise.loc[hymn_num, 'emocoes'].items(), key=lambda x: x[1], reverse=True)[:3]])}
+    st.metric(label="🎵 Hino", value=f"{hymn_num} — {hymn_name}")
 
-"""
+    f"""
+    **Emocoes principais:** {', '.join([f'{k}({v:.2f})' for k, v in sorted(hinos_analise.loc[hymn_num, 'emocoes'].items(), key=lambda x: x[1], reverse=True)[:3]])}
+    """
 
-similarities = list(enumerate(similarity_emocoes.iloc[hymn_num]))
-similarities = sorted(similarities, key=lambda x: x[1], reverse=True)
+    similarities = list(enumerate(similarity_emocoes.iloc[hymn_num]))
+    similarities = sorted(similarities, key=lambda x: x[1], reverse=True)
 
-rows = []
-for idx, score in similarities[1:11]:
-    rows.append(
-        {
-            "Hino": int(idx),
-            "Nome": hinos_analise["nome"].iloc[idx],
-            "Similaridade": float(score),
-        }
-    )
-df_sim = pd.DataFrame(rows).set_index("Hino")
-st.dataframe(df_sim.style.format({"Similaridade": "{:.3f}"}))
+    rows = []
+    for idx, score in similarities[1:11]:
+        rows.append(
+            {
+                "Hino": int(idx),
+                "Nome": hinos_analise["nome"].iloc[idx],
+                "Similaridade": float(score),
+            }
+        )
+    df_sim = pd.DataFrame(rows).set_index("Hino")
+    st.dataframe(df_sim.style.format({"Similaridade": "{:.3f}"}))
+else:
+    st.info("Selecione um hino acima para ver os mais semelhantes emocionalmente.")
 
 
 # resumo emocional
 """
-# Resumo Emocional da Coletânea
+## Resumo Emocional da Coletânea
 
 Em suma, a coletânea pode ser emocionalmente caracterizada pelos seguintes aspectos:
 """

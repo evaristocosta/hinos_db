@@ -31,7 +31,7 @@ if categorias_selecionadas:
 
 # - N-gramas
 """
-# N-gramas
+## N-gramas
 
 Aqui, analisamos os n-gramas (bigramas e trigramas) mais frequentes nos hinos. N-gramas são sequências 
 contíguas de 'n' itens (palavras, neste caso) em um texto. Bigramas são pares de palavras consecutivas, 
@@ -139,7 +139,7 @@ padronização linguística. Isso pode ser sinal de tradição, estilo de compos
 
 # - Matriz de similaridade TF-IDF
 """
-# Matriz de similaridade TF-IDF
+## Matriz de similaridade TF-IDF
 
 Aqui, utilizamos a técnica de TF-IDF (Term Frequency-Inverse Document Frequency) para transformar os 
 textos dos hinos em vetores numéricos, considerando de unigramas a trigramas. Em seguida, calculamos a 
@@ -169,7 +169,7 @@ fig = px.imshow(
     # title="Matriz de Similaridade TF-IDF",
     width=600,
     height=600,
-    color_continuous_scale="viridis",
+    color_continuous_scale="GnBu",
 )
 st.plotly_chart(fig)
 
@@ -187,7 +187,7 @@ mais aprofundadas sobre padrões de composição ou conteúdo.
 # - Ranking de termos mais relevantes
 
 """
-# Hinos mais similares e termos mais relevantes
+## Hinos mais similares e termos mais relevantes
 
 A seguir, é possível selecionar um hino específico para ver quais termos (unigramas, bigramas e trigramas)
 são mais relevantes para ele, de acordo com os pesos TF-IDF calculados anteriormente.
@@ -211,35 +211,44 @@ def top_terms_for_hymn(row, features, top_n=5):
 
 features = vectorizer.get_feature_names_out()
 
-hymn_num = st.number_input(
-    "Escolha o número de um hino:",
-    min_value=int(hinos_analise.index.min()),
-    max_value=int(hinos_analise.index.max()),
-    value=521,
+hinos_opcoes = [
+    f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()
+]
+hino_selecionado = st.selectbox(
+    "Pesquisar hino (número ou nome)",
+    options=hinos_opcoes,
+    placeholder="Digite para buscar...",
+    index=None,
+    help="Digite o número ou parte do nome do hino para pesquisar",
 )
 
-hymn_name = hinos_analise.loc[hymn_num, "nome"]
-st.markdown(f"**🎵 Hino {hymn_num} — {hymn_name}:**")
+if hino_selecionado:
+    hymn_num = int(hino_selecionado.split(" - ")[0])
+    hymn_name = hinos_analise.loc[hymn_num, "nome"]
 
-col1, col2 = st.columns(2)
-with col1:
-    st.markdown("**Hinos mais similares**")
-    top_similar = most_similar_hymns(hymn_num, similarity_df_tfidf, top_n=5)
-    similar_rows = [
-        {
-            "Hino": int(idx),
-            "Nome": hinos_analise.loc[idx, "nome"],
-            "Similaridade": round(score, 3),
-        }
-        for idx, score in top_similar.items()
-    ]
-    if similar_rows:
-        st.dataframe(pd.DataFrame(similar_rows).set_index("Hino"))
+    st.markdown(f"### 🎵 Hino {hymn_num} — {hymn_name}")
 
-with col2:
-    st.markdown("**Termos mais relevantes (TF-IDF)**")
-    row = X_tfidf[hymn_num].toarray().ravel()
-    top_terms = top_terms_for_hymn(row, features, top_n=5)
-    df_top = pd.DataFrame(top_terms, columns=["Termo", "Score"])
-    df_top["Score"] = df_top["Score"].round(3)
-    st.dataframe(df_top, hide_index=True)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("**Hinos mais similares**")
+        top_similar = most_similar_hymns(hymn_num, similarity_df_tfidf, top_n=5)
+        similar_rows = [
+            {
+                "Hino": int(idx),
+                "Nome": hinos_analise.loc[idx, "nome"],
+                "Similaridade": round(score, 3),
+            }
+            for idx, score in top_similar.items()
+        ]
+        if similar_rows:
+            st.dataframe(pd.DataFrame(similar_rows).set_index("Hino"))
+
+    with col2:
+        st.markdown("**Termos mais relevantes (TF-IDF)**")
+        row = X_tfidf[hymn_num].toarray().ravel()
+        top_terms = top_terms_for_hymn(row, features, top_n=5)
+        df_top = pd.DataFrame(top_terms, columns=["Termo", "Score"])
+        df_top["Score"] = df_top["Score"].round(3)
+        st.dataframe(df_top, hide_index=True)
+else:
+    st.caption("Selecione um hino para ver os termos mais relevantes e hinos similares.")

@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from pipeline import hinos_processados
+from src.pipeline import hinos_processados
 
 hinos: pd.DataFrame = hinos_processados()
 

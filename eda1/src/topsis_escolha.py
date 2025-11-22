@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from pipeline import hinos_processados, similarity_matrices
+from src.pipeline import hinos_processados, similarity_matrices
 from topsis_hamedbaziyad import TOPSIS
 
 

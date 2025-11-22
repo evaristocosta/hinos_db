@@ -9,7 +9,10 @@ Aqui você pode explorar diversas informações e análises estatísticas sobre 
 Hinos da Igreja Cristã Maranata* (excluindo os hinos de Crianças, Intermediários e Adolescentes - CIAs).
 """
 
-st.image(Path(__file__).parent / "assets" / "wordcloud.png", caption="Nuvem de palavras, da seção Exploração de Palavras")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+ASSET_PATH = REPO_ROOT / "eda1" / "assets" / "wordcloud.png"
+
+st.image(ASSET_PATH, caption="Nuvem de palavras, da seção Exploração de Palavras")
 
 """
 ## 📊 Objetivo do Projeto

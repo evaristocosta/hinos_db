@@ -21,9 +21,252 @@ com base na distância de uma solução ideal positiva e negativa.
 
 
 # - Funcionamento
-# - Escolha do hino
+# - Escolha dos pesos
+"""## Defina os pesos para cada critério
 
-"""### Escolha um hino para ver sugestões similares:"""
+Escolha uma configuração predefinida ou ajuste manualmente os pesos:
+
+"""
+
+# Presets de pesos
+"""#### Presets de configuração"""
+
+presets = {
+    "Padrão": {
+        "categoria_id": 100,
+        "word_cluster": 90,
+        "NMF_topic": 80,
+        "sent_cluster": 70,
+        "BERT_topic": 60,
+        "sim_word": 50,
+        "sim_sent": 40,
+        "sim_emocao": 30,
+    },
+    "Por Categoria": {
+        "categoria_id": 100,
+        "word_cluster": 20,
+        "NMF_topic": 20,
+        "sent_cluster": 20,
+        "BERT_topic": 20,
+        "sim_word": 10,
+        "sim_sent": 10,
+        "sim_emocao": 10,
+    },
+    "Simil. Semântica": {
+        "categoria_id": 10,
+        "word_cluster": 30,
+        "NMF_topic": 30,
+        "sent_cluster": 100,
+        "BERT_topic": 100,
+        "sim_word": 90,
+        "sim_sent": 90,
+        "sim_emocao": 20,
+    },
+    "Foco em Emoções": {
+        "categoria_id": 20,
+        "word_cluster": 20,
+        "NMF_topic": 20,
+        "sent_cluster": 30,
+        "BERT_topic": 30,
+        "sim_word": 30,
+        "sim_sent": 30,
+        "sim_emocao": 100,
+    },
+    "Balanceado": {
+        "categoria_id": 50,
+        "word_cluster": 50,
+        "NMF_topic": 50,
+        "sent_cluster": 50,
+        "BERT_topic": 50,
+        "sim_word": 50,
+        "sim_sent": 50,
+        "sim_emocao": 50,
+    },
+}
+
+preset_cols = st.columns(len(presets))
+for idx, (preset_name, preset_weights) in enumerate(presets.items()):
+    if preset_cols[idx].button(preset_name, use_container_width=True):
+        for key, value in preset_weights.items():
+            st.session_state[key] = value
+        st.rerun()
+
+st.divider()
+
+categories = [
+    "categoria_id",
+    "word_cluster",
+    "NMF_topic",
+    "sent_cluster",
+    "BERT_topic",
+    "sim_word",
+    "sim_sent",
+    "sim_emocao",
+]
+
+
+(
+    categoria_id_weight,
+    word_cluster_weight,
+    NMF_topic_weight,
+    sent_cluster_weight,
+    BERT_topic_weight,
+    sim_word_weight,
+    sim_sent_weight,
+    sim_emocao_weight,
+) = (0, 0, 0, 0, 0, 0, 0, 0)
+
+col_widths = [3, 1]
+
+with st.container():
+    col_left, col_right = st.columns(col_widths)
+    with col_left:
+        st.markdown("#### Coleção / Categoria")
+        st.write("Indica se os hinos pertencem à mesma coletânea ou tema.")
+    with col_right:
+        categoria_id_weight = col_right.slider(
+            label="",
+            min_value=0,
+            max_value=100,
+            value=100,
+            step=1,
+            key="categoria_id",
+        )
+
+
+
+with st.container():
+    col_left, col_right = st.columns(col_widths)
+    with col_left:
+        st.markdown("#### Similaridade lexical (Word Embeddings)")
+        st.write("Avalia a proximidade semântica entre os hinos com base em embeddings de palavras.")
+    with col_right:
+        sim_word_weight = col_right.slider(
+            label="",
+            min_value=0,
+            max_value=100,
+            value=50,
+            step=1,
+            key="sim_word",
+        )
+
+
+with st.container():
+    col_left, col_right = st.columns(col_widths)
+    with col_left:
+        st.markdown("#### Agrupamento lexical")
+        st.write("Compara se os hinos pertencem ao mesmo cluster de palavras (análise de agrupamento).")
+    with col_right:
+        word_cluster_weight = col_right.slider(
+            label="",
+            min_value=0,
+            max_value=100,
+            value=90,
+            step=1,
+            key="word_cluster",
+        )
+
+
+with st.container():
+    col_left, col_right = st.columns(col_widths)
+    with col_left:
+        st.markdown("#### Tópico (NMF)")
+        st.write("Considera similaridade de tópicos extraídos por NMF.")
+    with col_right:
+        NMF_topic_weight = col_right.slider(
+            label="",
+            min_value=0,
+            max_value=100,
+            value=80,
+            step=1,
+            key="NMF_topic",
+        )
+
+
+with st.container():
+    col_left, col_right = st.columns(col_widths)
+    with col_left:
+        st.markdown("#### Similaridade de sentenças (Sentence Embeddings)")
+        st.write("Avalia a proximidade semântica entre representações de sentenças dos hinos.")
+    with col_right:
+        sim_sent_weight = col_right.slider(
+            label="",
+            min_value=0,
+            max_value=100,
+            value=40,
+            step=1,
+            key="sim_sent",
+        )
+
+
+with st.container():
+    col_left, col_right = st.columns(col_widths)
+    with col_left:
+        st.markdown("#### Agrupamento de sentenças")
+        st.write("Compara se os hinos pertencem ao mesmo cluster baseado em sentenças.")
+    with col_right:
+        sent_cluster_weight = col_right.slider(
+            label="",
+            min_value=0,
+            max_value=100,
+            value=70,
+            step=1,
+            key="sent_cluster",
+        )
+
+
+with st.container():
+    col_left, col_right = st.columns(col_widths)
+    with col_left:
+        st.markdown("#### Tópico (BERT)")
+        st.write("Considera correspondência de tópicos extraídos via modelos baseados em BERT.")
+    with col_right:
+        BERT_topic_weight = col_right.slider(
+            label="",
+            min_value=0,
+            max_value=100,
+            value=60,
+            step=1,
+            key="BERT_topic",
+        )
+
+
+with st.container():
+    col_left, col_right = st.columns(col_widths)
+    with col_left:
+        st.markdown("#### Similaridade emocional")
+        st.write("Compara perfis emocionais derivados da análise de emoções no texto dos hinos.")
+    with col_right:
+        sim_emocao_weight = col_right.slider(
+            label="",
+            min_value=0,
+            max_value=100,
+            value=30,
+            step=1,
+            key="sim_emocao",
+        )
+
+weights = [
+    categoria_id_weight,
+    word_cluster_weight,
+    NMF_topic_weight,
+    sent_cluster_weight,
+    BERT_topic_weight,
+    sim_word_weight,
+    sim_sent_weight,
+    sim_emocao_weight,
+]
+
+
+st.divider()
+
+
+# - Escolha do hino
+"""## Escolha um hino para ver sugestões similares:
+
+Considerando os pesos definidos acima, selecione um hino para o qual deseja encontrar 
+sugestões similares.
+"""
 hinos_opcoes = [
     f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()
 ]
@@ -84,142 +327,12 @@ hinos_restantes["sim_word"] = similarity_matrix_words_sample.values
 hinos_restantes["sim_sent"] = similarity_matrix_sent_sample.values
 hinos_restantes["sim_emocao"] = similarity_matrix_emocoes_sample.values
 
-# - Escolha dos pesos
-"""### Defina os pesos para cada critério"""
 
-categories = [
-    "categoria_id",
-    "word_cluster",
-    "NMF_topic",
-    "sent_cluster",
-    "BERT_topic",
-    "sim_word",
-    "sim_sent",
-    "sim_emocao",
-]
-
-
-(
-    categoria_id_weight,
-    word_cluster_weight,
-    NMF_topic_weight,
-    sent_cluster_weight,
-    BERT_topic_weight,
-    sim_word_weight,
-    sim_sent_weight,
-    sim_emocao_weight,
-) = (0, 0, 0, 0, 0, 0, 0, 0)
-
-col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
-with col1:
-    st.badge("Categoria")
-
-    categoria_id_weight = svs.vertical_slider(
-        key="categoria_id",
-        default_value=100,
-        step=1,
-        min_value=0,
-        max_value=100,
-    )
-    st.caption("Considerando as categorias da coletânea de hinos.")
-
-with col2:
-    st.badge("Similaridade (palavras)", color="orange")
-    sim_word_weight = svs.vertical_slider(
-        key="sim_word",
-        default_value=50,
-        step=1,
-        min_value=0,
-        max_value=100,
-    )
-    st.caption(
-        "Considerando a similaridade entre os hinos com base em Word Embeddings."
-    )
-
-with col3:
-    st.badge("Cluster (palavras)", color="orange")
-    word_cluster_weight = svs.vertical_slider(
-        key="word_cluster",
-        default_value=90,
-        step=1,
-        min_value=0,
-        max_value=100,
-    )
-    st.caption("Considerando os clusters de palavras dos hinos.")
-
-with col4:
-    st.badge("Tópico NMF", color="orange")
-    NMF_topic_weight = svs.vertical_slider(
-        key="NMF_topic",
-        default_value=80,
-        step=1,
-        min_value=0,
-        max_value=100,
-    )
-    st.caption("Considerando os tópicos NMF dos hinos.")
-
-with col5:
-    st.badge("Similaridade (sentenças)", color="green")
-    sim_sent_weight = svs.vertical_slider(
-        key="sim_sent",
-        default_value=40,
-        step=1,
-        min_value=0,
-        max_value=100,
-    )
-    st.caption(
-        "Considerando a similaridade entre os hinos com base em Sentence Embeddings."
-    )
-
-with col6:
-    st.badge("Cluster (sentenças)", color="green")
-    sent_cluster_weight = svs.vertical_slider(
-        key="sent_cluster",
-        default_value=70,
-        step=1,
-        min_value=0,
-        max_value=100,
-    )
-    st.caption("Considerando os clusters de sentenças dos hinos.")
-
-with col7:
-    st.badge("Tópico BERT", color="green")
-    BERT_topic_weight = svs.vertical_slider(
-        key="BERT_topic",
-        default_value=60,
-        step=1,
-        min_value=0,
-        max_value=100,
-    )
-    st.caption("Considerando os tópicos BERT dos hinos.")
-
-with col8:
-    st.badge("Similaridade (emoções)", color="red")
-    sim_emocao_weight = svs.vertical_slider(
-        key="sim_emocao",
-        default_value=30,
-        step=1,
-        min_value=0,
-        max_value=100,
-    )
-    st.caption(
-        "Considerando a similaridade entre os hinos com base na análise de emoções."
-    )
-
-weights = [
-    categoria_id_weight,
-    word_cluster_weight,
-    NMF_topic_weight,
-    sent_cluster_weight,
-    BERT_topic_weight,
-    sim_word_weight,
-    sim_sent_weight,
-    sim_emocao_weight,
-]
+st.divider()
 
 # - Resultados
 """
-# Resultados da seleção TOPSIS
+## Resultados da seleção TOPSIS
 
 """
 

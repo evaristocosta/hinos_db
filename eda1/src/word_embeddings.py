@@ -78,7 +78,7 @@ nos documentos, a matriz de similaridade baseada em embeddings de palavras captu
 entre os hinos. Isso significa que hinos com significados semelhantes, mesmo que usem palavras diferentes, podem ser 
 identificados como similares, o que explica porque mais hinos aparecem como similares nesta matriz.
 
-Dois hinos que chamam a atenção são 106 - "Pela fé somos salvos" e 179 - "Pela fé eu posso contemplar Jesus": ambos tem 
+Dois hinos que chamam a atenção são 106 -- "Pela fé somos salvos" e 179 -- "Pela fé eu posso contemplar Jesus": ambos tem 
 baixa similaridade com a maioria dos outros hinos, mas alta similaridade entre si. Isso sugere que, apesar de usarem 
 palavras diferentes, eles compartilham um significado semântico semelhante, relacionado ao tema da fé e salvação.
 """
@@ -132,15 +132,15 @@ else:
 
 Utilizando os embeddings de palavras, aplicamos técnicas de redução de dimensionalidade (UMAP) e clustering (K-Means) para 
 agrupar os hinos com base em suas similaridades semânticas. A visualização abaixo mostra os hinos em um espaço bidimensional,
-onde cores diferentes representam clusters distintos. 
+onde cores diferentes representam clusters (ou grupos) distintos. 
 
 Cada ponto representa um hino, e a proximidade entre os pontos indica similaridade semântica. Clusters próximos
-sugerem temas ou estilos comuns entre os hinos agrupados. 
+sugerem temas ou estilos comuns entre os hinos. 
 
 A definição do número de clusters foi baseada na análise de silhueta, resultando em 10 clusters que capturam bem as 
 variações nos temas dos hinos -- embora o melhor valor de silhueta tenha sido encontrado para 2 clusters, decidi 
 manter 10 clusters para uma representação mais granular e próxima da quantidade de categorias originais que existem
-na coleção de hinos.
+na coletânea.
 
 """
 
@@ -188,8 +188,8 @@ for c in sorted(hinos_analise["word_cluster"].unique()):
     rows.append(
         {
             "Cluster": str(c),
-            "Top terms": ", ".join(top_terms),
-            "Top hinos": " | ".join(top_hinos),
+            "Termos": ", ".join(top_terms),
+            "Hinos de exemplo": " | ".join(top_hinos),
         }
     )
 
@@ -212,7 +212,7 @@ hinos_cluster9 = hinos_analise[hinos_analise["word_cluster"] == 9][
     ["nome", "categoria_abr"]
 ].rename_axis("Nº")
 f"""
-### Cluster 9 em perspectiva
+#### Cluster 9 em perspectiva
 
 O cluster 9 é composto por um total de {hinos_cluster9.shape[0]} hinos. A seguir, são apresentados os hinos 
 pertencentes a este cluster, que se destaca por sua separação no espaço UMAP.
@@ -387,7 +387,7 @@ hinos_topico4 = hinos_analise[hinos_analise["NMF_topic"] == 4][
 ].rename_axis("Nº")
 
 f"""
-### Hinos do Tópico 4
+#### Hinos do Tópico 4
 
 O tópico 4 é composto por um total de {hinos_topico4.shape[0]} hinos, mais do que o cluster 9 (que tem 
 {hinos_cluster9.shape[0]} hinos). A seguir, apresentamos os hinos pertencentes ao tópico 4.

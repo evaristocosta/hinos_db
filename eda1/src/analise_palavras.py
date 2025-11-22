@@ -10,7 +10,8 @@ import plotly.express as px
 
 st.title("✒️ Análise de palavras")
 """
-Nesta seção, exploramos as palavras presentes nos hinos através de n-gramas e análise de similaridade utilizando TF-IDF. 
+Nesta seção, exploramos as palavras presentes nos hinos através de n-gramas e análise de 
+similaridade utilizando TF-IDF (mais detalhes abaixo).
 """
 
 hinos_analise: pd.DataFrame = hinos_processados()
@@ -194,7 +195,9 @@ mais aprofundadas sobre padrões de composição ou conteúdo.
 """
 ## Hinos mais similares e termos mais relevantes
 
-A seguir, é possível selecionar um hino específico para ver quais termos (unigramas, bigramas e trigramas)
+A seguir, é possível selecionar um hino específico para ver quais outros hinos são mais similares 
+a ele, com base na matriz de similaridade TF-IDF calculada anteriormente. Além disso, são 
+exibidos os termos (unigramas, bigramas e trigramas) que
 são mais relevantes para ele, de acordo com os pesos TF-IDF calculados anteriormente.
 """
 

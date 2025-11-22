@@ -169,7 +169,7 @@ else:
 
 """
 A média de palavras por hino é de 100.5 palavras, indicada pela linha pontilhada 
-azul no gráfico acima. Os hinos da categoria "GRUPO DE LOUVOR" são os que apresentam maior
+no gráfico acima. Os hinos da categoria "GRUPO DE LOUVOR" são os que apresentam maior
 média de palavras (116), enquanto que "CORINHOS" tem a menor média (45), muito embora 
 tenha outliers que chegam a 261 palavras (Sequência de Louvores Nº 1). A categoria com maior
 variação na quantia de palavras é a de "SANTIFICAÇÃO E DERRAMAMENTO DO ESPÍRITO SANTO", com
@@ -198,12 +198,21 @@ if hino_selecionado:
     hymn_num = int(hino_selecionado.split(" - ")[0])
     hymn_title = hinos_analise.loc[hymn_num, "nome"]
     hymn_num_words = hinos_analise.loc[hymn_num, "num_tokens"]
+    
+    # Calcular a posição no ranking (ordem decrescente de num_tokens)
+    ranking = hinos_analise["num_tokens"].rank(method="min", ascending=False)
+    hymn_rank_big = int(ranking.loc[hymn_num])
+
+    ranking_low = hinos_analise["num_tokens"].rank(method="min", ascending=True)
+    hymn_rank_small = int(ranking_low.loc[hymn_num])
 
 with col2:
     if hino_selecionado:
         st.metric(
             label=f"🎵 Hino {hymn_num} - {hymn_title}",
             value=f"{hymn_num_words} palavras",
+            delta=f"#{hymn_rank_big} maior -- #{hymn_rank_small} menor",
+            delta_color="off",
             width="content",
             height="stretch",
         )
@@ -221,11 +230,11 @@ Uma breve explicação dos termos:
 ao que fizemos nas etapas anteriores).
 - **Stopwords**: palavras comuns que geralmente não carregam muito significado (como "e", "o", "de" em português) 
 e são removidas para focar nas palavras mais relevantes.
-
+"""
+st.info("""
 **Importante:** o pré-processamento inclui transformar todas as palavras para minúsculas, remover pontuações e caracteres especiais.
 Portanto, palavras como "Jesus", "Deus", "Cristo" e "Senhor" serão tratadas como "jesus", "deus", "cristo" e "senhor", meramente
-por questões de análise textual.
-"""
+por questões de análise textual.""", icon="ℹ️")
 
 
 # - Total de palavras únicas e mais longas
@@ -241,9 +250,8 @@ texto_se_filtro = (
 f"""
 ## Estatísticas de Vocabulário
 
-Na coletânea, {texto_se_filtro}existe um total de {len(palavras)} palavras, das quais {len(palavras_unicas)} 
+Na coletânea, {texto_se_filtro}existe um total de **{len(palavras)}** palavras, das quais **{len(palavras_unicas)}** 
 são únicas, ou seja, aparecem apenas uma vez no conjunto de hinos.
-
 As 10 maiores palavras são as seguintes:
 """
 
@@ -280,8 +288,9 @@ st.altair_chart(chart)
 # - Histograma de frequência de tamanhos
 # Histograma interativo: distribuição do tamanho das palavras (tokens sem stopwords)
 """
-Se analisarmos o tamanho das palavras (em número de caracteres), podemos observar a distribuição
-desses tamanhos no histograma abaixo.
+Se analisarmos o tamanho de cada palavra (em número de caracteres) no todo da coletânea, 
+podemos observar a distribuição no histograma abaixo. O histograma mostra a frequência de 
+palavras de diferentes tamanhos. 
 """
 
 

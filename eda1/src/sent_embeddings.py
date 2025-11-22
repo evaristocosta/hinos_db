@@ -75,9 +75,9 @@ global, enquanto os embeddings de palavras focam em palavras individuais.
 Essa característica dos embeddings de frases permite identificar similaridades semânticas mais profundas entre os 
 hinos, mesmo quando eles utilizam palavras diferentes para expressar ideias semelhantes.
 
-O que chama atenção, pela análise visual da matriz, são algumas linhas e colunas mais claras, indicando hinos que
-não compartilham muita similaridade com os demais, como o hino 396 - "Abba Pai", ou 13 - "Vamos lavar as vestes". 
-Esses hinos podem ser considerados mais únicos em termos de conteúdo e estilo, destacando-se na coleção.
+O que chama atenção, pela análise visual da matriz, são algumas linhas e colunas mais "azuis", indicando hinos que
+não compartilham muita similaridade com os demais, como o hino 396 -- "Abba Pai", ou 13 -- "Vamos lavar as vestes". 
+Esses hinos podem ser considerados mais únicos em termos de conteúdo e estilo, destacando-se na coletânea.
 A região dos corinhos (maiores que 731) também se destaca, mostrando hinos de menor similaridade com os demais, e
 mesmo entre eles. De fato, são hinos característicos, com estruturas e temas próprios, o que justifica sua menor 
 similaridade. O mesmo acontece com alguns hinos de clamor, e de invocação. No entanto, a faixa que mais chama atenção
@@ -218,7 +218,7 @@ else:
 
 Assim como na análise de embeddings de palavras, aplicamos técnicas de redução de dimensionalidade (UMAP)
 e clustering (K-Means) para visualizar e agrupar os hinos com base em seus embeddings de frases. Levando em conta
-resultados da análise de silhueta, optamos por 9 clusters para os embeddings de frases.
+resultados da análise de silhueta, optei por 9 clusters para os embeddings de frases.
 """
 
 fig = px.scatter(
@@ -262,8 +262,8 @@ for c in sorted(hinos_analise["sent_cluster"].unique()):
     rows.append(
         {
             "Cluster": c,
-            "Top termos": ", ".join(top_terms),
-            "Top hinos": " | ".join(top_hymns),
+            "Termos": ", ".join(top_terms),
+            "Hinos de exemplo": " | ".join(top_hymns),
         }
     )
 

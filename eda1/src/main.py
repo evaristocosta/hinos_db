@@ -5,8 +5,8 @@ st.title("🎵 Hinos em Dados")
 """
 Seja bem-vindo ao **Hinos em Dados**!
 
-Aqui você pode explorar diversas informações e análises estatísticas sobre os hinos da Coletânea de 
-Hinos da Igreja Cristã Maranata, desconsiderando os hinos de Crianças, Intermediários e Adolescentes (CIAs).
+Aqui você pode explorar diversas informações e análises estatísticas sobre os hinos da *Coletânea de 
+Hinos da Igreja Cristã Maranata* (excluindo os hinos de Crianças, Intermediários e Adolescentes - CIAs).
 """
 
 st.image(Path("assets\\wordcloud.png"), caption="Nuvem de palavras, da seção Exploração de Palavras")
@@ -17,11 +17,11 @@ st.image(Path("assets\\wordcloud.png"), caption="Nuvem de palavras, da seção E
 Este projeto tem como propósito realizar uma **Análise Exploratória de Dados (EDA)** da 
 Coletânea, utilizando técnicas de Ciência de Dados e Processamento de Linguagem Natural (NLP) para:
 
-- **Compreender padrões** nos títulos e letras dos hinos
-- **Identificar categorias temáticas** e características dos louvores
-- **Analisar emoções** presentes nas letras
-- **Explorar similaridades** entre os hinos usando embeddings
-- **Fornecer insights** sobre a riqueza do conteúdo da coletânea
+- **Compreender padrões** nos títulos e letras dos hinos;
+- **Identificar categorias temáticas** e características dos louvores;
+- **Analisar emoções** presentes nas letras;
+- **Explorar similaridades** entre os hinos usando diversas abordagens; 
+- **Fornecer insights** sobre a riqueza do conteúdo da coletânea.
 
 ## 🛠️ Desenvolvimento
 
@@ -36,9 +36,10 @@ Utilize o menu lateral para navegar entre as diferentes análises disponíveis:
 """
 st.info("**Importante**: As análises estão em ordem de complexidade crescente.", icon="ℹ️")
 """
-- **📆 Tabela Exploratória**: Visualize todos os hinos em formato de tabela, com informações como título, categoria, número de palavras e muito mais.
+- **📆 Tabela Exploratória**: Visualize todos os hinos usados nesta análise em formato de tabela, com informações como título, 
+categoria e texto do hino. É possível filtrar e buscar hinos específicos.
 
-- **📑 Categorias dos Louvores**: Explore a distribuição dos hinos por categorias temáticas e entenda como estão organizados.
+- **📑 Categorias dos Louvores**: Uma rápida visão geral da distribuição dos hinos por categorias da coletânea.
 
 - **🔢 Tamanho dos Títulos**: Analise estatísticas sobre o comprimento e características dos títulos dos hinos.
 
@@ -56,7 +57,8 @@ st.info("**Importante**: As análises estão em ordem de complexidade crescente.
 
 ## 👨‍💻 Contato
 
-Este projeto foi desenvolvido por **Lucas Piccioni Costa**.
+Este projeto foi desenvolvido por **Lucas Piccioni Costa**. Se tiver alguma dúvida, sugestão ou quiser
+conversar sobre o projeto, sinta-se à vontade para entrar em contato:
 
 - 📧 Email: [lucascosta74@gmail.com](mailto:lucascosta74@gmail.com)
 - 📸 Instagram: [lucas.costa74](https://www.instagram.com/lucas.costa74/)

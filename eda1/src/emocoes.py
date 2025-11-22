@@ -352,8 +352,8 @@ st.plotly_chart(fig_scatter, use_container_width=True)
 A visualização de relacionamento deixa ainda mais clara a positividade predominante nos hinos,
 com muitos hinos apresentando altos scores em emoções positivas e baixos em negativas -- quase uma linha horizontal, com
 score negativas próximo de zero. No entanto, é interessante notar que alguns hinos compartilham scores positivos
-e negativos moderados (exemplos: 301 - "Quando a tristeza surgir", 132 - "Já não estou sozinho", e 
-379 - "Algemado por um peso"), indicando uma complexidade emocional onde sentimentos mistos são expressos.
+e negativos moderados (exemplos: 301 -- "Quando a tristeza surgir", 132 -- "Já não estou sozinho", e 
+379 -- "Algemado por um peso"), indicando uma complexidade emocional onde sentimentos mistos são expressos.
 """
 
 # Valência emocional média: 0.701
@@ -365,6 +365,48 @@ hino mais positivo é o **{hinos_analise.loc[hinos_analise['valencia_emocional']
 
 """
 
+"""
+#### Lista de hinos negativos
+
+Como apenas 21 hinos foram classificados como negativos, segue a lista completa deles:
+"""
+
+hinos_negativos = hinos_analise[hinos_analise['categoria_dominante'] == 'negativas'].sort_values('valencia_emocional')
+st.dataframe(
+    hinos_negativos[['nome', 'valencia_emocional', 'emocao_dominante', 'texto_limpo']].rename_axis("Nº"),
+    use_container_width=True,
+    column_config={
+        "nome": st.column_config.TextColumn(
+            "Nome do Hino",
+            help="Nome do hino negativo."
+        ),
+        "valencia_emocional": st.column_config.NumberColumn(
+            "Valência Emocional",
+            help="Diferença entre scores positivos e negativos.",
+            width="small"
+        ),
+        "emocao_dominante": st.column_config.TextColumn(
+            "Emoção Dominante",
+            help="Emoção predominante no hino.",
+            width="small"
+        ),
+        "texto_limpo": st.column_config.TextColumn(
+            "Texto do Hino",
+            help="Trecho do texto do hino.",
+            width="large"
+        ),
+    }
+)
+
+"""
+**Uma conclusão importante:** embora seja possível entender o motivo de alguns hinos serem classificados como negativos,
+por vezes não é tão evidente, ou até mesmo contraditório. Por vezes, pode ser uma interpretação incorreta por parte do modelo,
+como no caso do hino 322 -- "Há um amigo sempre junto", cuja emoção dominante é desapontamento ("disappointment"), 
+apesar do texto ser claramente positivo e encorajador. Isso pode ocorrer por diversos fatores, como a presença de
+linguagem figurada, metáforas, ou mesmo a ambiguidade inerente à linguagem humana. Portanto, é crucial interpretar esses resultados
+com cautela, considerando o contexto mais amplo dos hinos e reconhecendo as limitações e possíveis erros 
+dos modelos de análise de sentimentos.
+"""
 
 # casos extremos
 """
@@ -430,7 +472,7 @@ st.dataframe(df_top3, use_container_width=True, column_config={
 
 """
 É notável como pelo menos um hino de cada ranking concorda com a emoção dominante previamente identificada,
-reforçando a consistência dos dados analisados. "Senhor, te amo, te amo" na categoria de "amor"; o otimismo de "Assim
+o que colabora com a consistência dos dados analisados. "Senhor, te amo, te amo" na categoria de "amor"; o otimismo de "Assim
 como a noite espera pelo dia"; a admiração expressa em "Lindo! Lindo! Lindo!"; a alegria de quem canta "Às vezes, alguém me 
 pergunta"; a tristeza antes de ver que "Uma luz brilhou em meu caminho". Esses exemplos ilustram bem como as emoções 
 são capturadas e refletidas nos hinos.

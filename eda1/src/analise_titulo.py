@@ -63,8 +63,8 @@ col1, col2 = st.columns(2)
 
 
 with col1:
-    st.markdown("**Desconsiderando subtítulos**")
-    st.markdown("Top 10 maiores títulos")
+    st.markdown("### Desconsiderando subtítulos")
+    st.markdown("**Top 10 maiores títulos**")
     st.dataframe(
         hinos_analise_print[["Nome", "titulo_tam_real"]]
         .sort_values(by="titulo_tam_real", ascending=False)
@@ -80,7 +80,8 @@ with col1:
             "Nome": st.column_config.TextColumn(width="small", max_chars=25),
         },
     )
-    st.markdown("Top 10 menores títulos")
+    st.divider()
+    st.markdown("**Top 10 menores títulos**")
     st.dataframe(
         hinos_analise_print[["Nome", "titulo_tam_real"]]
         .sort_values(by="titulo_tam_real")
@@ -98,8 +99,8 @@ with col1:
     )
 
 with col2:
-    st.markdown("**Considerando subtítulos**")
-    st.markdown("Top 10 maiores títulos")
+    st.markdown("### Considerando subtítulos")
+    st.markdown("**Top 10 maiores títulos**")
     st.dataframe(
         hinos_titulos[["Nome", "titulo_tam_real"]]
         .sort_values(by="titulo_tam_real", ascending=False)
@@ -115,7 +116,8 @@ with col2:
             "Nome": st.column_config.TextColumn(width="small", max_chars=25),
         },
     )
-    st.markdown("Top 10 menores títulos")
+    st.divider()
+    st.markdown("**Top 10 menores títulos**")
     st.dataframe(
         hinos_titulos[["Nome", "titulo_tam_real"]]
         .sort_values(by="titulo_tam_real")
@@ -139,7 +141,7 @@ os oito primeiros hinos com maiores títulos permanecem os mesmos, sendo que o m
 ocorrendo três vezes (hinos 323, 511 e 612).
 
 Já na lista dos menores títulos, a inclusão dos subtítulos traz mudanças mais significativas, alterando significativamente
-a composição dos dez menores títulos. O menor título absoluto, com apenas quatro caracteres, é o hino 475 ("Ageu").
+a composição dos dez menores títulos. O menor título absoluto, com apenas quatro caracteres, é o hino 475 -- Ageu.
 
 
 ## Medidor de título

@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 from pipeline import hinos_processados, similarity_matrices
-import streamlit_vertical_slider as svs
 from topsis_hamedbaziyad import TOPSIS
 
 

@@ -148,7 +148,10 @@ semelhantes são os hinos entre si com base no conteúdo textual. Valores próxi
 similaridade, enquanto valores próximos de 0 indicam baixa similaridade.
 """
 
-st.warning("Aplicar filtros pode causar problemas na visualização da matriz de similaridade." , icon="⚠️")
+st.warning(
+    "Aplicar filtros pode causar problemas na visualização da matriz de similaridade.",
+    icon="⚠️",
+)
 
 
 # Juntar os tokens em strings
@@ -219,9 +222,7 @@ def top_terms_for_hymn(row, features, top_n=5):
 
 features = vectorizer.get_feature_names_out()
 
-hinos_opcoes = [
-    f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()
-]
+hinos_opcoes = [f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()]
 hino_selecionado = st.selectbox(
     "Pesquisar hino (número ou nome)",
     options=hinos_opcoes,
@@ -259,4 +260,6 @@ if hino_selecionado:
         df_top["Score"] = df_top["Score"].round(3)
         st.dataframe(df_top, hide_index=True)
 else:
-    st.caption("Selecione um hino para ver os termos mais relevantes e hinos similares.")
+    st.caption(
+        "Selecione um hino para ver os termos mais relevantes e hinos similares."
+    )

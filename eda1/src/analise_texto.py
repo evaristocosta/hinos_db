@@ -45,7 +45,9 @@ hinos_analise = hinos_analise.rename_axis("Nº")
 st.sidebar.header("Filtros")
 categorias_unicas = hinos_analise["categoria_abr"].unique()
 categorias_selecionadas = st.sidebar.multiselect(
-    "Selecione as categorias", options=categorias_unicas, placeholder="Selecione categorias..."
+    "Selecione as categorias",
+    options=categorias_unicas,
+    placeholder="Selecione categorias...",
 )
 if categorias_selecionadas:
     hinos_analise = hinos_analise[
@@ -178,9 +180,7 @@ hinos de vão de 24 a 345 palavras, sendo este o maior hino da coletânea.
 A seguir, é possível pesquisar o número de palavras de um hino específico:
 
 """
-hinos_opcoes = [
-    f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()
-]
+hinos_opcoes = [f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()]
 
 col1, col2 = st.columns(2)
 with col1:
@@ -192,13 +192,13 @@ with col1:
         index=None,
         help="Digite o número ou parte do nome do hino para pesquisar",
     )
-    
+
 # Extrair o número do hino da seleção
 if hino_selecionado:
     hymn_num = int(hino_selecionado.split(" - ")[0])
     hymn_title = hinos_analise.loc[hymn_num, "nome"]
     hymn_num_words = hinos_analise.loc[hymn_num, "num_tokens"]
-    
+
     # Calcular a posição no ranking (ordem decrescente de num_tokens)
     ranking = hinos_analise["num_tokens"].rank(method="min", ascending=False)
     hymn_rank_big = int(ranking.loc[hymn_num])
@@ -218,7 +218,7 @@ with col2:
         )
     else:
         st.caption("Selecione um hino para ver o tamanho do título.")
-    
+
 st.divider()
 
 """
@@ -231,10 +231,13 @@ ao que fizemos nas etapas anteriores).
 - **Stopwords**: palavras comuns que geralmente não carregam muito significado (como "e", "o", "de" em português) 
 e são removidas para focar nas palavras mais relevantes.
 """
-st.info("""
+st.info(
+    """
 **Importante:** o pré-processamento inclui transformar todas as palavras para minúsculas, remover pontuações e caracteres especiais.
 Portanto, palavras como "Jesus", "Deus", "Cristo" e "Senhor" serão tratadas como "jesus", "deus", "cristo" e "senhor", meramente
-por questões de análise textual.""", icon="ℹ️")
+por questões de análise textual.""",
+    icon="ℹ️",
+)
 
 
 # - Total de palavras únicas e mais longas
@@ -354,7 +357,7 @@ else:
     fig.update_layout(xaxis=dict(dtick=1), bargap=0.05)
     fig.update_xaxes(tickangle=-45)
 
-    st.plotly_chart(fig, width='stretch')
+    st.plotly_chart(fig, width="stretch")
 
 
 """
@@ -453,7 +456,10 @@ indica sua frequência. A seguir, apresentamos a Wordcloud das palavras mais fre
 
 """
 
-st.info("Experimente usar o filtro na barra lateral - a Wordcloud muda de acordo com as categorias selecionadas.", icon="ℹ️")
+st.info(
+    "Experimente usar o filtro na barra lateral - a Wordcloud muda de acordo com as categorias selecionadas.",
+    icon="ℹ️",
+)
 word_freq_dict = dict(zip(contagem_palav["palavra"], contagem_palav["contagem"]))
 
 from wordcloud import WordCloud
@@ -475,5 +481,5 @@ ax.imshow(wordcloud, interpolation="bilinear")
 ax.axis("off")
 # ax.set_title("Word Cloud - Palavras mais frequentes nos hinos", fontsize=16, pad=20)
 plt.tight_layout()
-st.pyplot(fig, width='content')
+st.pyplot(fig, width="content")
 plt.close(fig)

@@ -42,7 +42,10 @@ uma vez com o título principal e outra com o subtítulo.
 
 O tamanho aqui, é medido em número de caracteres, considerando espaços. 
 """
-st.info("É possível usar o filtro na barra lateral para restringir a análise a categorias específicas de hinos.", icon="ℹ️")
+st.info(
+    "É possível usar o filtro na barra lateral para restringir a análise a categorias específicas de hinos.",
+    icon="ℹ️",
+)
 
 
 st.sidebar.markdown("# Filtros")
@@ -151,9 +154,7 @@ igual tamanho.
 """
 
 # Criar lista de opções para o selectbox
-hinos_opcoes = [
-    f"{num} - {row['Nome']}" for num, row in hinos_analise.iterrows()
-]
+hinos_opcoes = [f"{num} - {row['Nome']}" for num, row in hinos_analise.iterrows()]
 
 col1, col2 = st.columns(2)
 

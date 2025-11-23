@@ -95,7 +95,7 @@ chart = (
     .properties(height=500)
 )
 
-st.altair_chart(chart, width='stretch')
+st.altair_chart(chart, width="stretch")
 
 
 # conclusões

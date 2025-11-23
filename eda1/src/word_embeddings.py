@@ -45,7 +45,10 @@ mais altos indicam maior similaridade semântica.
 
 """
 
-st.warning("Aplicar filtros pode causar problemas na visualização da matriz de similaridade." , icon="⚠️")
+st.warning(
+    "Aplicar filtros pode causar problemas na visualização da matriz de similaridade.",
+    icon="⚠️",
+)
 
 # filtrar a matriz de similaridade para mostrar apenas os hinos presentes em hinos_analise
 selected_idx = list(hinos_analise.index)
@@ -90,9 +93,7 @@ palavras diferentes, eles compartilham um significado semântico semelhante, rel
 A seguir, selecione um hino para ver os mais semelhantes com base nos embeddings de palavras.
 """
 
-hinos_opcoes = [
-    f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()
-]
+hinos_opcoes = [f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()]
 hino_selecionado = st.selectbox(
     "Pesquisar hino (número ou nome)",
     options=hinos_opcoes,

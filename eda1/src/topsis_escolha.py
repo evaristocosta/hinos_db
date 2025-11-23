@@ -134,12 +134,13 @@ with st.container():
         )
 
 
-
 with st.container():
     col_left, col_right = st.columns(col_widths)
     with col_left:
         st.markdown("#### Similaridade lexical (Word Embeddings)")
-        st.write("Avalia a proximidade semântica entre os hinos com base em embeddings de palavras.")
+        st.write(
+            "Avalia a proximidade semântica entre os hinos com base em embeddings de palavras."
+        )
     with col_right:
         sim_word_weight = col_right.slider(
             label="Similaridade lexical (Word Embeddings)",
@@ -156,7 +157,9 @@ with st.container():
     col_left, col_right = st.columns(col_widths)
     with col_left:
         st.markdown("#### Agrupamento lexical")
-        st.write("Compara se os hinos pertencem ao mesmo cluster de palavras (análise de agrupamento).")
+        st.write(
+            "Compara se os hinos pertencem ao mesmo cluster de palavras (análise de agrupamento)."
+        )
     with col_right:
         word_cluster_weight = col_right.slider(
             label="Agrupamento lexical",
@@ -190,7 +193,9 @@ with st.container():
     col_left, col_right = st.columns(col_widths)
     with col_left:
         st.markdown("#### Similaridade de sentenças (Sentence Embeddings)")
-        st.write("Avalia a proximidade semântica entre representações de sentenças dos hinos.")
+        st.write(
+            "Avalia a proximidade semântica entre representações de sentenças dos hinos."
+        )
     with col_right:
         sim_sent_weight = col_right.slider(
             label="Similaridade de sentenças (Sentence Embeddings)",
@@ -224,7 +229,9 @@ with st.container():
     col_left, col_right = st.columns(col_widths)
     with col_left:
         st.markdown("#### Tópico (BERT)")
-        st.write("Considera correspondência de tópicos extraídos via modelos baseados em BERT.")
+        st.write(
+            "Considera correspondência de tópicos extraídos via modelos baseados em BERT."
+        )
     with col_right:
         BERT_topic_weight = col_right.slider(
             label="Tópico (BERT)",
@@ -241,7 +248,9 @@ with st.container():
     col_left, col_right = st.columns(col_widths)
     with col_left:
         st.markdown("#### Similaridade emocional")
-        st.write("Compara perfis emocionais derivados da análise de emoções no texto dos hinos.")
+        st.write(
+            "Compara perfis emocionais derivados da análise de emoções no texto dos hinos."
+        )
     with col_right:
         sim_emocao_weight = col_right.slider(
             label="Similaridade emocional",
@@ -274,9 +283,7 @@ st.divider()
 Considerando os pesos definidos acima, selecione um hino para o qual deseja encontrar 
 sugestões similares.
 """
-hinos_opcoes = [
-    f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()
-]
+hinos_opcoes = [f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()]
 hino_selecionado = st.selectbox(
     "Pesquisar hino (número ou nome)",
     options=hinos_opcoes,

@@ -58,8 +58,6 @@ def similarity_matrices():
         / "similarity_matrix_sentence_embeddings.pkl"
     )
     similarity_emocoes = pd.read_pickle(
-        Path(__file__).parent.parent
-        / "assets"
-        / "similarity_matrix_emocoes.pkl"
+        Path(__file__).parent.parent / "assets" / "similarity_matrix_emocoes.pkl"
     )
     return similarity_word, similarity_sent, similarity_emocoes

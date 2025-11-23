@@ -55,21 +55,31 @@ tabela = st.Page("src/tabela.py", title="Tabela exploratória", icon="📆")
 # Exploração das categorias dos louvores (eda1_part1)
 categorias = st.Page("src/categorias.py", title="Categorias dos louvores", icon="📑")
 # Exploração dos títulos (eda1_part2)
-analise_titulo = st.Page("src/analise_titulo.py", title="Tamanho dos títulos", icon="🔢")
+analise_titulo = st.Page(
+    "src/analise_titulo.py", title="Tamanho dos títulos", icon="🔢"
+)
 # Exploração dos textos (eda1_part3.1)
-analise_texto = st.Page("src/analise_texto.py", title="Exploração de palavras", icon="🔡")
+analise_texto = st.Page(
+    "src/analise_texto.py", title="Exploração de palavras", icon="🔡"
+)
 # Exploração dos textos (eda1_part3.2)
-analise_palavras = st.Page("src/analise_palavras.py", title="Análise de palavras", icon="✒️")
+analise_palavras = st.Page(
+    "src/analise_palavras.py", title="Análise de palavras", icon="✒️"
+)
 # Tranformação de palavras em embeddings (eda1_part4)
 word_embeddings = st.Page(
     "src/word_embeddings.py", title="Embeddings de palavras", icon="📝"
 )
 # Frases todas como embeddings (eda1_part5)
-sent_embeddings = st.Page("src/sent_embeddings.py", title="Embeddings de frases", icon="🗒️")
+sent_embeddings = st.Page(
+    "src/sent_embeddings.py", title="Embeddings de frases", icon="🗒️"
+)
 # Análise de emoções (eda1_part6)
 emocoes = st.Page("src/emocoes.py", title="Análise de emoções", icon="🎭")
 # Seleção de similares usando TOPSIS (eda1_part7)
-topsis_escolha = st.Page("src/topsis_escolha.py", title="Seleção de similares", icon="✅")
+topsis_escolha = st.Page(
+    "src/topsis_escolha.py", title="Seleção de similares", icon="✅"
+)
 
 # Set up navigation
 pg = st.navigation(

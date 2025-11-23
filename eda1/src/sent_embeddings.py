@@ -50,7 +50,10 @@ e não apenas de palavras individuais -- processo de tokenização e remoção d
 
 """
 
-st.warning("Aplicar filtros pode causar problemas na visualização da matriz de similaridade." , icon="⚠️")
+st.warning(
+    "Aplicar filtros pode causar problemas na visualização da matriz de similaridade.",
+    icon="⚠️",
+)
 
 # restringe a matriz de similaridade aos hinos atualmente no dataframe (caso haja filtro)
 idx = hinos_analise.index.tolist()
@@ -147,7 +150,7 @@ fig = px.scatter(
     title="Relação entre tamanho do hino e similaridade média",
     width=700,
     height=450,
-    color_discrete_sequence=["#6181a8"]
+    color_discrete_sequence=["#6181a8"],
 )
 st.plotly_chart(fig)
 
@@ -176,9 +179,7 @@ Usando os dados de similaridade, a seguir você pode selecionar um hino para ver
 nos embeddings de sentenças.
 """
 
-hinos_opcoes = [
-    f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()
-]
+hinos_opcoes = [f"{num} - {row['nome']}" for num, row in hinos_analise.iterrows()]
 hino_selecionado = st.selectbox(
     "Pesquisar hino (número ou nome)",
     options=hinos_opcoes,
@@ -196,9 +197,9 @@ if hino_selecionado:
     similarities = list(enumerate(similarity_sentence.iloc[hymn_num]))
     similarities = sorted(similarities, key=lambda x: x[1], reverse=True)
 
-
     results = [
-        (idx, hinos_analise["nome"].iloc[idx], score) for idx, score in similarities[1:11]
+        (idx, hinos_analise["nome"].iloc[idx], score)
+        for idx, score in similarities[1:11]
     ]
     df_sim = (
         pd.DataFrame(results, columns=["hino", "nome", "similaridade"])
@@ -277,7 +278,6 @@ sendo essas as palavras mais comuns na coletânea. Outros termos frequentes, com
 também aparecem, indicando temas recorrentes nos hinos. O cluster 6, por exemplo, é o único a destacar "sangue", sugerindo
 hinos da categoria de "CLAMOR".
 """
-
 
 
 """
@@ -364,16 +364,49 @@ com os clusters anteriores, mas sim com temas semânticos extraídos dos textos 
 """
 
 topics = {
-    0: ['amor', 'me', 'meu', 'eu', 'que', 'em', 'senhor', 'mim', 'quero', 'teu'],
-    1: ['glória', 'de', 'jesus', 'que', 'vem', 'os', 'com', 'senhor', 'santo', 'rei'],
-    2: ['eu', 'que', 'jesus', 'cristo', 'céu', 'de', 'me', 'meu', 'com', 'dia'],
-    3: ['que', 'no', 'ele', 'de', 'jesus', 'deus', 'na', 'com', 'do', 'se'],
-    4: ['senhor', 'teu', 'nos', 'nosso', 'nós', 'nossa', 'tua', 'vidas', 'louvor', 'te'],
-    5: ['ti', 'mim', 'tu', 'és', 'minha', 'meu', 'de', 'senhor', 'em', 'vem'],
-    6: ['eu', 'de', 'meu', 'hei', 'ao', 'do', 'que', 'ver', 'me', 'terra'],
-    7: ['tais', 'que', 'dos', 'sossegai', 'um', 'nos', 'cristo', 'senhor', 'jesus', 'deixa'],
-    8: ['sangue', 'teu', 'mim', 'estendeu', 'me', 'para', 'mão', 'em', 'sem', 'senhor'],
-    9: ['louvai', 'senhor', 'jerusalém', 'aleluia', 'do', 'ao', 'nome', 'amém', 'dos', 'seja'],
+    0: ["amor", "me", "meu", "eu", "que", "em", "senhor", "mim", "quero", "teu"],
+    1: ["glória", "de", "jesus", "que", "vem", "os", "com", "senhor", "santo", "rei"],
+    2: ["eu", "que", "jesus", "cristo", "céu", "de", "me", "meu", "com", "dia"],
+    3: ["que", "no", "ele", "de", "jesus", "deus", "na", "com", "do", "se"],
+    4: [
+        "senhor",
+        "teu",
+        "nos",
+        "nosso",
+        "nós",
+        "nossa",
+        "tua",
+        "vidas",
+        "louvor",
+        "te",
+    ],
+    5: ["ti", "mim", "tu", "és", "minha", "meu", "de", "senhor", "em", "vem"],
+    6: ["eu", "de", "meu", "hei", "ao", "do", "que", "ver", "me", "terra"],
+    7: [
+        "tais",
+        "que",
+        "dos",
+        "sossegai",
+        "um",
+        "nos",
+        "cristo",
+        "senhor",
+        "jesus",
+        "deixa",
+    ],
+    8: ["sangue", "teu", "mim", "estendeu", "me", "para", "mão", "em", "sem", "senhor"],
+    9: [
+        "louvai",
+        "senhor",
+        "jerusalém",
+        "aleluia",
+        "do",
+        "ao",
+        "nome",
+        "amém",
+        "dos",
+        "seja",
+    ],
 }
 
 rows = [
@@ -400,7 +433,9 @@ estão marcados com valor igual a -1: isso indica que esses hinos não foram atr
 sendo considerados "outliers" ou hinos que não se encaixam bem em nenhum dos tópicos identificados.
 
 """
-st.info("Na legenda do gráfico, é possível clicar no tópico -1 para ocultar esses pontos e melhorar a visualização.")
+st.info(
+    "Na legenda do gráfico, é possível clicar no tópico -1 para ocultar esses pontos e melhorar a visualização."
+)
 
 fig = px.scatter(
     hinos_analise,

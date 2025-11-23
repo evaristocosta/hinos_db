@@ -1,7 +1,7 @@
 import streamlit as st
 
 
-st.set_page_config(page_title="EDA da Coletânea", layout="wide")
+st.set_page_config(page_title="🎵 Hinos em Dados", layout="wide")
 
 st.markdown(
     """

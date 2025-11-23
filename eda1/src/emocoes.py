@@ -65,7 +65,7 @@ fig_bar.update_layout(
     yaxis={'categoryorder': 'total ascending'}
 )
 
-st.plotly_chart(fig_bar, use_container_width=True)
+st.plotly_chart(fig_bar, width='stretch')
 
 """
 Quase metade dos hinos expressam "amor", e quase um quarto expressam "otimismo", sendo essas
@@ -115,7 +115,7 @@ fig_corr = px.imshow(
 )
 fig_corr.update_traces(text=texto_correlacao, texttemplate='%{text}')
 fig_corr.update_layout(height=700)
-st.plotly_chart(fig_corr, use_container_width=True)
+st.plotly_chart(fig_corr, width='stretch')
 
 """
 Quatro correlações notáveis emergem da análise: tristeza ("sadness") e luto ("grief") estão 
@@ -175,7 +175,7 @@ fig.update_yaxes(title_text="Frequência", row=1, col=1)
 fig.update_yaxes(title_text="Frequência", row=1, col=2)
 fig.update_layout(height=500, showlegend=False)
 
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width='stretch')
 
 
 # media de entropia: 1.189
@@ -221,7 +221,7 @@ with col1:
         })
 
     df_div = pd.DataFrame(rows_div).set_index("rank")
-    st.dataframe(df_div[["nome", "entropia", "top_3_emocoes"]], use_container_width=True, column_config={
+    st.dataframe(df_div[["nome", "entropia", "top_3_emocoes"]], width='stretch', column_config={
         "top_3_emocoes": st.column_config.TextColumn(
             "Top 3 Emoções",
             help="As três emoções mais fortes no hino, com seus scores."
@@ -254,7 +254,7 @@ with col2:
         })
 
     df_conc = pd.DataFrame(rows_conc).set_index("rank")
-    st.dataframe(df_conc[["nome", "concentracao", "emocao_dominante"]], use_container_width=True, column_config={
+    st.dataframe(df_conc[["nome", "concentracao", "emocao_dominante"]], width='stretch', column_config={
         "emocao_dominante": st.column_config.TextColumn(
             "Emoção Dominante",
             help="A emoção mais forte no hino, com seu score."
@@ -318,7 +318,7 @@ fig.update_layout(
     title='Distribuição das Categorias Emocionais Dominantes nos Hinos'
 )
 
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width='stretch')
 
 """
 Pode-se observar que a maioria dos hinos (58,6%) pertence a categorias emocionais positivas, enquanto 38,7% são neutras e 
@@ -346,7 +346,7 @@ fig_scatter = px.scatter(
     hover_data={'idx': True, 'nome': True, 'score_positivas': ':.3f', 'score_negativas': ':.3f', 'score_neutras': ':.3f'}
 )
 fig_scatter.update_layout(height=500)
-st.plotly_chart(fig_scatter, use_container_width=True)
+st.plotly_chart(fig_scatter, width='stretch')
 
 """
 A visualização de relacionamento deixa ainda mais clara a positividade predominante nos hinos,
@@ -374,7 +374,7 @@ Como apenas 21 hinos foram classificados como negativos, segue a lista completa 
 hinos_negativos = hinos_analise[hinos_analise['categoria_dominante'] == 'negativas'].sort_values('valencia_emocional')
 st.dataframe(
     hinos_negativos[['nome', 'valencia_emocional', 'emocao_dominante', 'texto_limpo']].rename_axis("Nº"),
-    use_container_width=True,
+    width='stretch',
     column_config={
         "nome": st.column_config.TextColumn(
             "Nome do Hino",
@@ -452,7 +452,7 @@ df_top3 = pd.DataFrame(rows).set_index("emocao").rename_axis("Emoção")
 A tabela abaixo apresenta os três hinos com os maiores scores para cada uma das 8 principais emoções identificadas.
 
 """
-st.dataframe(df_top3, use_container_width=True, column_config={
+st.dataframe(df_top3, width='stretch', column_config={
     "1": st.column_config.TextColumn(
         "1º Lugar",
         help="Hino com maior score na emoção.",

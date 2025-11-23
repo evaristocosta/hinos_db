@@ -8,3 +8,4 @@ scipy
 sqlalchemy
 nltk
 topsis-hamedbaziyad
+wordcloud

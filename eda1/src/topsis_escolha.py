@@ -124,7 +124,8 @@ with st.container():
         st.write("Indica se os hinos pertencem à mesma coletânea ou tema.")
     with col_right:
         categoria_id_weight = col_right.slider(
-            label="",
+            label="Coleção / Categoria",
+            label_visibility="hidden",
             min_value=0,
             max_value=100,
             value=100,
@@ -141,7 +142,8 @@ with st.container():
         st.write("Avalia a proximidade semântica entre os hinos com base em embeddings de palavras.")
     with col_right:
         sim_word_weight = col_right.slider(
-            label="",
+            label="Similaridade lexical (Word Embeddings)",
+            label_visibility="hidden",
             min_value=0,
             max_value=100,
             value=50,
@@ -157,7 +159,8 @@ with st.container():
         st.write("Compara se os hinos pertencem ao mesmo cluster de palavras (análise de agrupamento).")
     with col_right:
         word_cluster_weight = col_right.slider(
-            label="",
+            label="Agrupamento lexical",
+            label_visibility="hidden",
             min_value=0,
             max_value=100,
             value=90,
@@ -173,7 +176,8 @@ with st.container():
         st.write("Considera similaridade de tópicos extraídos por NMF.")
     with col_right:
         NMF_topic_weight = col_right.slider(
-            label="",
+            label="Tópico (NMF)",
+            label_visibility="hidden",
             min_value=0,
             max_value=100,
             value=80,
@@ -189,7 +193,8 @@ with st.container():
         st.write("Avalia a proximidade semântica entre representações de sentenças dos hinos.")
     with col_right:
         sim_sent_weight = col_right.slider(
-            label="",
+            label="Similaridade de sentenças (Sentence Embeddings)",
+            label_visibility="hidden",
             min_value=0,
             max_value=100,
             value=40,
@@ -205,7 +210,8 @@ with st.container():
         st.write("Compara se os hinos pertencem ao mesmo cluster baseado em sentenças.")
     with col_right:
         sent_cluster_weight = col_right.slider(
-            label="",
+            label="Agrupamento de sentenças",
+            label_visibility="hidden",
             min_value=0,
             max_value=100,
             value=70,
@@ -221,7 +227,8 @@ with st.container():
         st.write("Considera correspondência de tópicos extraídos via modelos baseados em BERT.")
     with col_right:
         BERT_topic_weight = col_right.slider(
-            label="",
+            label="Tópico (BERT)",
+            label_visibility="hidden",
             min_value=0,
             max_value=100,
             value=60,
@@ -237,7 +244,8 @@ with st.container():
         st.write("Compara perfis emocionais derivados da análise de emoções no texto dos hinos.")
     with col_right:
         sim_emocao_weight = col_right.slider(
-            label="",
+            label="Similaridade emocional",
+            label_visibility="hidden",
             min_value=0,
             max_value=100,
             value=30,
